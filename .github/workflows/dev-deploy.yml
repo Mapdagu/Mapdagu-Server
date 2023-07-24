@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        
       # JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -20,13 +21,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
-      # application-dev.yml
-      - name: make application-dev.yml
-        run:
-          cd ./src/main/resources
-          touch ./application-dev.yml
-          echo "${{ secrets.APPLICATION_DEV_YML }}" > ./application-dev.yml
-        shell: bash
+      # Ignore yml 파일 추가
+      - name: Copy dev secret
+        env:
+          DEV_SECRET: ${{ secrets.APPLICATION_DEV_YML }}
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-dev.yml
+        run: echo $DEV_SECRET | base64 --decode >> $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
           
       # ./gradlew 권한 설정
       - name: ./gradlew 권한 설정
