@@ -27,9 +27,9 @@ dependencies {
 	// Spring Data Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	// OAuth2 Client
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	// Spring Web
@@ -43,7 +43,7 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
