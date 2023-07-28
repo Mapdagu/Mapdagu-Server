@@ -1,4 +1,4 @@
-package com.project.mapdagu.common.domain;
+package com.project.mapdagu.common.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
