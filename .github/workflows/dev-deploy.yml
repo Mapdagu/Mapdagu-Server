@@ -86,7 +86,8 @@ jobs:
             sudo docker rm spring-dev
             sudo docker image rm ${{ secrets.DOCKER_REPO }}
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest-dev
-            sudo docker run -d --name spring-dev -p 8080:8080 -e spring.profiles.active=dev-env ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest-dev
+            sudo docker run -d --name spring-dev -e spring.profiles.active=dev-env ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest-dev
+            sudo docker network connect mapdagu_network spring-dev
 
       # REMOVE Github IP FROM security group
       - name: Remove IP FROM security group
