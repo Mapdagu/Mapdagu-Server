@@ -15,24 +15,24 @@ public class Member extends BaseTimeEntity {
     private Long id;
     private String email;
     private String password;
-    private String name;
+    private String nickname;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
     private SocialType socialType;  // KAKAO, NAVER, GOOGLE
     private String socialId;    // 로그인한 소셜 타입 식별자 값 (일반 로그인의 경우 null)
-    private String nickname;
+    private String userName;
     private String imageNum;
 
     @Builder
-    public Member(String email, String password, String name, Role role, SocialType socialType, String socialId, String nickname, String imageNum) {
+    public Member(String email, String password, String nickname, Role role, SocialType socialType, String socialId, String userName, String imageNum) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.nickname = nickname;
         this.role = role;
         this.socialType = socialType;
         this.socialId = socialId;
-        this.nickname = nickname;
+        this.userName = userName;
         this.imageNum = imageNum;
     }
 }
