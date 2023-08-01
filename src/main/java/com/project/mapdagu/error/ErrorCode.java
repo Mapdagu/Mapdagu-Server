@@ -11,7 +11,10 @@ import static org.springframework.http.HttpStatus.*;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    TOKEN_NOT_EXIST(NOT_FOUND, "토큰이 존재하지 않습니다.");
+    TOKEN_NOT_EXIST(NOT_FOUND, "토큰이 존재하지 않습니다."),
+
+    ALREADY_EXIST_EMAIL(BAD_REQUEST, "이미 존재하는 이메일입니다."),
+    ALREADY_EXIST_USERNAME(BAD_REQUEST, "이미 존재하는 사용자 이름입니다.");
 
     private final int code;
     private final String message;
