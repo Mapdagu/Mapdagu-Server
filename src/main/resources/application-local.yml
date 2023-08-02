@@ -2,6 +2,9 @@ server:
   port: 8080
 
 spring:
+  config:
+    activate:
+      on-profile: local
   h2:
     console:
       enabled: true
@@ -15,7 +18,7 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
