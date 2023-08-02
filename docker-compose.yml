@@ -23,5 +23,5 @@ services:
       - mapdagu_network
 
 networks:
-  snack_net:
+  mapdagu_network:
     driver: bridge
