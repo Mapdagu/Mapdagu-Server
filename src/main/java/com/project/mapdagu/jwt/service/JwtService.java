@@ -3,6 +3,7 @@ package com.project.mapdagu.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -25,10 +26,10 @@ public class JwtService {
     private String secretKey;
 
     @Value("${jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
+    private Integer accessTokenExpirationPeriod;
 
     @Value("${jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
+    private Integer refreshTokenExpirationPeriod;
 
     @Value("${jwt.access.header}")
     private String accessHeader;
@@ -52,19 +53,19 @@ public class JwtService {
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
-                // claim -> email 사용
                 .withClaim(EMAIL_CLAIM, email)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
     /**
-     * RefreshToken 생성 (claim에 email 필요 x)
+     * RefreshToken 생성
      */
-    public String createRefreshToken() {
+    public String createRefreshToken(String email) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .withClaim(EMAIL_CLAIM, email)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
@@ -75,6 +76,15 @@ public class JwtService {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(accessHeader, accessToken);
         log.info("재발급된 Access Token : {}", accessToken);
+    }
+
+    public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie(REFRESH_TOKEN_SUBJECT, refreshToken);
+        cookie.setMaxAge(refreshTokenExpirationPeriod);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
     /**
@@ -109,11 +119,11 @@ public class JwtService {
      * AccessToken에서 Email 추출
      * AceessToken 검증 후 이메일 추출 (유효하지 않다면 빈 Optional 객체 반환)
      */
-    public Optional<String> extractEmail(String accessToken) {
+    public Optional<String> extractEmail(String token) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                     .build()
-                    .verify(accessToken)
+                    .verify(token)
                     .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
