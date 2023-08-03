@@ -14,6 +14,8 @@ public enum ErrorCode {
     TOKEN_NOT_EXIST(NOT_FOUND, "토큰이 존재하지 않습니다."),
     INVALID_TOKEN(UNAUTHORIZED, "잘못된 토큰입니다."),
 
+    MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원을 찾을 수 없습니다"),
+
     ALREADY_EXIST_EMAIL(BAD_REQUEST, "이미 존재하는 이메일입니다."),
     ALREADY_EXIST_USERNAME(BAD_REQUEST, "이미 존재하는 사용자 이름입니다.");
 
