@@ -50,14 +50,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         String refreshToken = jwtService.extractRefreshToken(request)
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
-        String email = jwtService.extractEmail(refreshToken).orElseThrow(() -> new TokenException(ErrorCode.INVALID_TOKEN));
 
         // 리프레시 토큰이 요청 헤더에 존재하고 유효하다면, AccessToken이 만료된 것 -> AccessToken 재발급
-        if (refreshToken != null && isRefreshTokenMatch(email, refreshToken)) {
-            String newAccessToken = jwtService.createAccessToken(email);
-            String newRefreshToken = jwtService.createRefreshToken(email);
-            jwtService.updateRefreshToken(email, newRefreshToken);
-            jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+        if (refreshToken != null) {
+            String email = jwtService.extractEmail(refreshToken).orElseThrow(() -> new TokenException(ErrorCode.INVALID_TOKEN));
+            if (isRefreshTokenMatch(email, refreshToken)) {
+                String newAccessToken = jwtService.createAccessToken(email);
+                String newRefreshToken = jwtService.createRefreshToken(email);
+                jwtService.updateRefreshToken(email, newRefreshToken);
+                jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+            }
             return;
         }
 
@@ -97,6 +99,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
      */
     public void saveAuthentication(Member member) {
+        log.info("saveAuthentication() 호출");
         String password = member.getPassword();
         if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
             password = PasswordUtil.generateRandomPassword();
