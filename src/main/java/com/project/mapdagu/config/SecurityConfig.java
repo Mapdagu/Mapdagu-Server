@@ -1,7 +1,14 @@
 package com.project.mapdagu.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mapdagu.domain.auth.filter.CustomJsonAuthenticationFilter;
+import com.project.mapdagu.domain.auth.handler.LoginFailureHandler;
+import com.project.mapdagu.domain.auth.handler.LoginSuccessHandler;
+import com.project.mapdagu.domain.auth.service.LoginService;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
+import com.project.mapdagu.domain.oauth2.handler.OAuth2LoginFailureHandler;
+import com.project.mapdagu.domain.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.project.mapdagu.domain.oauth2.service.CustomOAuth2UserService;
 import com.project.mapdagu.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.project.mapdagu.jwt.service.JwtService;
 import com.project.mapdagu.util.RedisUtil;
@@ -33,10 +40,10 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
-//    private final LoginService loginService;
-//    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-//    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
-//    private final CustomOAuth2UserService customOauth2UserService;
+    private final LoginService loginService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOauth2UserService;
     private final RedisUtil redisUtil;
 
 
@@ -50,15 +57,20 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(request -> request.requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll()
+                .authorizeHttpRequests(request ->
+                        request.requestMatchers(mvcMatcherBuilder.pattern("/login")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/sign-up")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/h2-console/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/css/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/js/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/images/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/index.html")).permitAll()
                         .anyRequest().authenticated())
-//                .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2LoginSuccessHandler)
-//                        .failureHandler(oAuth2LoginFailureHandler)
-//                        .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint.userService(customOauth2UserService)))
-//                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
-//                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler))
-                ;
+                .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
+                        .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint.userService(customOauth2UserService)))
+                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonAuthenticationFilter.class);
 
         return http.build();
     }
@@ -72,29 +84,29 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-//        provider.setUserDetailsService(loginService);
+        provider.setUserDetailsService(loginService);
         return new ProviderManager(provider);
     }
 
-//    @Bean
-//    public LoginSuccessHandler loginSuccessHandler() {
-//        return new LoginSuccessHandler(jwtService, userRepository);
-//    }
-//
-//    @Bean
-//    public LoginFailureHandler loginFailureHandler() {
-//        return new LoginFailureHandler();
-//    }
-//
-//    @Bean
-//    public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
-//        CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
-//                = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
-//        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
-//        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
-//        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
-//        return customJsonUsernamePasswordLoginFilter;
-//    }
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler(jwtService, memberRepository);
+    }
+
+    @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
+    }
+
+    @Bean
+    public CustomJsonAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
+        CustomJsonAuthenticationFilter customJsonUsernamePasswordLoginFilter
+                = new CustomJsonAuthenticationFilter(objectMapper);
+        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
+        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        return customJsonUsernamePasswordLoginFilter;
+    }
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
