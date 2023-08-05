@@ -47,14 +47,29 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
 
         log.info("JwtAuthenticationProcessingFilter 호출");
-        String accessToken = jwtService.extractAccessToken(request).orElse(null);
+        // 사용자 요청 헤더에서 RefreshToken 추출-> RefreshToken이 없거나 유효하지 않다면 null
+        String refreshToken = jwtService.extractRefreshToken(request)
+                .filter(jwtService::isTokenValid)
+                .orElse(null);
 
-        if (jwtService.isTokenValid(accessToken)) {
-            jwtService.extractEmail(accessToken)
-                    .ifPresent(email -> memberRepository.findByEmail(email)
-                            .ifPresent(this::saveAuthentication));
+        // 리프레시 토큰이 요청 헤더에 존재하고 유효하다면, AccessToken이 만료된 것 -> AccessToken 재발급
+        if (refreshToken != null) {
+            String email = jwtService.extractEmail(refreshToken).orElseThrow(() -> new TokenException(ErrorCode.INVALID_TOKEN));
+            if (isRefreshTokenMatch(email, refreshToken)) {
+                String newAccessToken = jwtService.createAccessToken(email);
+                String newRefreshToken = jwtService.createRefreshToken(email);
+                jwtService.updateRefreshToken(email, newRefreshToken);
+                jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+            }
+            return;
         }
-        filterChain.doFilter(request, response);
+
+        // AccessToken을 검사하고 인증 처리
+        // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
+        // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
+        else {
+            checkAccessTokenAndAuthentication(request, response, filterChain);
+        }
     }
 
     public boolean isRefreshTokenMatch(String email, String refreshToken) {

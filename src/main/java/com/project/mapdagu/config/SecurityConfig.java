@@ -66,9 +66,8 @@ public class SecurityConfig {
                                 .requestMatchers(mvcMatcherBuilder.pattern("/images/**")).permitAll()
                                 .requestMatchers(mvcMatcherBuilder.pattern("/index.html")).permitAll()
                         .anyRequest().authenticated())
-                .oauth2Login(oauth2Login -> oauth2Login
-//                        successHandler(oAuth2LoginSuccessHandler)
-//                        .failureHandler(oAuth2LoginFailureHandler)
+                .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint.userService(customOauth2UserService)))
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonAuthenticationFilter.class);
