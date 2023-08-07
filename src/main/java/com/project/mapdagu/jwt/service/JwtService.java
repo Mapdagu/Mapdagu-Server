@@ -3,6 +3,7 @@ package com.project.mapdagu.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
+import com.project.mapdagu.util.RedisUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ public class JwtService {
 
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RedisUtil redisUtil;
 
     /**
      * AccessToken 생성 메소드
@@ -149,7 +151,7 @@ public class JwtService {
      * RefreshToken 저장(업데이트)
      */
     public void updateRefreshToken(String email, String refreshToken) {
-        redisTemplate.opsForValue().set(email, refreshToken, refreshTokenExpirationPeriod);
+        redisUtil.set(email, refreshToken, refreshTokenExpirationPeriod);
     }
 
     /**
