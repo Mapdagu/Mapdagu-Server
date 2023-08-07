@@ -45,6 +45,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return;
         }
+        log.info("uri = {}, query = {}", request.getRequestURI(), request.getQueryString());
 
         log.info("JwtAuthenticationProcessingFilter 호출");
         // 사용자 요청 헤더에서 RefreshToken 추출-> RefreshToken이 없거나 유효하지 않다면 null
