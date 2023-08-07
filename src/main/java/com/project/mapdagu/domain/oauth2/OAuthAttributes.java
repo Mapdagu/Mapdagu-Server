@@ -13,6 +13,9 @@ import lombok.Getter;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * 소셜별로 받는 데이터를 분기 처리하는 클래스
+ */
 @Getter
 public class OAuthAttributes {
 
@@ -25,6 +28,9 @@ public class OAuthAttributes {
         this.oauth2UserInfo = oauth2UserInfo;
     }
 
+    /**
+     * SocialType별 메소드 호출하여 OAuthAttributes 객체 반환
+     */
     public static OAuthAttributes of(SocialType socialType, String userNameAttributeName, Map<String, Object> attributes) {
 
         if (socialType == SocialType.NAVER) {
