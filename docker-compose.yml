@@ -8,8 +8,7 @@ services:
     ports:
       - 6379:6379
     networks:
-      mapdagu_network:
-        ipv4_address: 172.18.0.2
+      - mapdagu_network
 
   springboot:
     container_name: spring-dev
@@ -26,6 +25,3 @@ services:
 networks:
   mapdagu_network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
