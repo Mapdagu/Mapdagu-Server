@@ -52,19 +52,18 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
-        // 리프레시 토큰이 요청 헤더에 존재하고 유효하다면, AccessToken이 만료된 것 -> AccessToken 재발급
+        // 리프레시 토큰이 요청 헤더에 존재하고 유효하다면, AccessToken이 만료된 것 -> AccessToken/RefreshToken 재발급
         if (refreshToken != null) {
+            log.info("RefreshToken 요청 헤더에 존재");
             String email = jwtService.extractEmail(refreshToken).orElseThrow(() -> new TokenException(ErrorCode.INVALID_TOKEN));
             if (isRefreshTokenMatch(email, refreshToken)) {
-                String newAccessToken = jwtService.createAccessToken(email);
-                String newRefreshToken = jwtService.createRefreshToken(email);
-                jwtService.updateRefreshToken(email, newRefreshToken);
-                jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+                log.info("RefreshToken 유효, AccessToken 만료");
+                reIssueRefreshAndAccessToken(response, refreshToken, email);
             }
             return;
         }
 
-        // AccessToken을 검사하고 인증 처리
+        // RefreshToken이 없다면 AccessToken을 검사하고 인증 처리
         // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
         else {
@@ -72,7 +71,23 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * AccessToken, RefreshToken 재발급 메소드 + 응답 헤더에 보내기
+     */
+    private void reIssueRefreshAndAccessToken(HttpServletResponse response, String refreshToken, String email) {
+        String newAccessToken = jwtService.createAccessToken(email);
+        String newRefreshToken = jwtService.createRefreshToken(email);
+        redisUtil.delete(email);
+        jwtService.updateRefreshToken(email, newRefreshToken);
+        jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+        log.info("AccessToken, RefreshToken 재발급 완료");
+    }
+
+    /**
+     * RefreshToken 검증 메소드
+     */
     public boolean isRefreshTokenMatch(String email, String refreshToken) {
+        log.info("RefreshToken 검증");
         if (redisUtil.get(email).equals(refreshToken)) {
             return true;
         }
@@ -85,7 +100,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        log.info("checkAccessTokenAndAuthentication() 호출");
+        log.info("액세스 토큰 체크 & 인증 처리 메소드 checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
@@ -100,7 +115,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
      */
     public void saveAuthentication(Member member) {
-        log.info("saveAuthentication() 호출");
+        log.info("인증 허가 메소드 saveAuthentication() 호출");
         String password = member.getPassword();
         if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
             password = PasswordUtil.generateRandomPassword();

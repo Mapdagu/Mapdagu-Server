@@ -58,7 +58,7 @@ public class JwtService {
     }
 
     /**
-     * RefreshToken 생성
+     * RefreshToken 생성 메소드
      */
     public String createRefreshToken(String email) {
         Date now = new Date();
@@ -70,7 +70,7 @@ public class JwtService {
     }
 
     /**
-     * AccessToken 재발급 시 헤더에 실어서 보내기
+     * AccessToken 헤더에 실어서 보내기
      */
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
@@ -116,8 +116,7 @@ public class JwtService {
     }
 
     /**
-     * AccessToken에서 Email 추출
-     * AceessToken 검증 후 이메일 추출 (유효하지 않다면 빈 Optional 객체 반환)
+     * AccessToken에서 Email 추출 -> 유효하지 않다면 빈 Optional 객체 반환
      */
     public Optional<String> extractEmail(String token) {
         try {
