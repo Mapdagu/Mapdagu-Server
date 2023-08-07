@@ -9,7 +9,7 @@ services:
       - 6379:6379
     networks:
       mapdagu_network:
-        - ipv4_address: 172.18.0.2
+        ipv4_address: 172.18.0.2
 
   springboot:
     container_name: spring-dev
