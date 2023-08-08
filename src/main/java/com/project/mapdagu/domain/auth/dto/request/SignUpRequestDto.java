@@ -1,4 +1,4 @@
-package com.project.mapdagu.domain.member.dto.request;
+package com.project.mapdagu.domain.auth.dto.request;
 
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.entity.Role;
