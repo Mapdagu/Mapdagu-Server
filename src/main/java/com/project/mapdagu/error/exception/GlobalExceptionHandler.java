@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
+    public ResponseEntity<String> handle(final Exception e) {
+        log.error("Internal Error occurred", e);
+        return ResponseEntity.internalServerError().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handle(final BusinessException e) {
         log.info("businessException: {}", e);
         return ResponseEntity.status(e.getCode()).body(ErrorResponse.of(e.getCode(), e.getMessage()));
