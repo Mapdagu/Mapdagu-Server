@@ -1,7 +1,7 @@
 package com.project.mapdagu.domain.auth.service;
 
-import com.project.mapdagu.domain.member.dto.request.SignUpRequestDto;
-import com.project.mapdagu.domain.member.dto.response.SignUpResponseDto;
+import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
+import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.error.exception.custom.BusinessException;
