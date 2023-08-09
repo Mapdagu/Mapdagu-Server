@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
                                 .requestMatchers(mvcMatcherBuilder.pattern("/swagger-resources/**")).permitAll()
                                 .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/sign-up/email")).permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
