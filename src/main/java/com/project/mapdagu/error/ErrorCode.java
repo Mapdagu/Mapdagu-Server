@@ -16,6 +16,7 @@ public enum ErrorCode {
 
     MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원을 찾을 수 없습니다"),
 
+    EMAIL_SEND_ERROR(BAD_REQUEST, "이메일 인증 코드 전송을 실패했습니다."),
     ALREADY_EXIST_EMAIL(BAD_REQUEST, "이미 존재하는 이메일입니다."),
     ALREADY_EXIST_USERNAME(BAD_REQUEST, "이미 존재하는 사용자 이름입니다.");
 
