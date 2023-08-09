@@ -128,7 +128,7 @@ public class JwtService {
                     .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
+            log.error("토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
     }
@@ -137,14 +137,14 @@ public class JwtService {
      * AccessToken 헤더 설정
      */
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
+        response.setHeader(accessHeader, "Bearer " + accessToken);
     }
 
     /**
      * RefreshToken 헤더 설정
      */
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
+        response.setHeader(refreshHeader, "Bearer " + refreshToken);
     }
 
     /**
