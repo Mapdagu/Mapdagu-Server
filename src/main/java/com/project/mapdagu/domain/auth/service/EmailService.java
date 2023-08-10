@@ -2,6 +2,7 @@ package com.project.mapdagu.domain.auth.service;
 
 import com.project.mapdagu.domain.auth.dto.request.EmailRequestDto;
 import com.project.mapdagu.domain.auth.dto.response.EmailResponseDto;
+import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.error.exception.custom.BusinessException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -14,6 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+import static com.project.mapdagu.error.ErrorCode.ALREADY_EXIST_EMAIL;
 import static com.project.mapdagu.error.ErrorCode.EMAIL_SEND_ERROR;
 
 
@@ -23,6 +25,7 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
     private final SpringTemplateEngine templateEngine;
+    private final MemberRepository memberRepository;
     private String authNum; //랜덤 인증 코드
 
     /**
@@ -73,6 +76,10 @@ public class EmailService {
      * 메일 전송
      */
     public EmailResponseDto sendEmail(EmailRequestDto requestDto) throws BusinessException {
+
+        if (memberRepository.existsByEmail(requestDto.email())) {
+            throw new BusinessException(ALREADY_EXIST_EMAIL);
+        }
         try{
             // 메일전송에 필요한 정보 설정
             MimeMessage emailForm = createEmailForm(requestDto.email());
