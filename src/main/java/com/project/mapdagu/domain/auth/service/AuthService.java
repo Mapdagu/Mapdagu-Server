@@ -10,6 +10,7 @@ import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.error.exception.custom.BusinessException;
 import com.project.mapdagu.error.exception.custom.TokenException;
 import com.project.mapdagu.jwt.service.JwtService;
+import com.project.mapdagu.util.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RedisUtil redisUtil;
 
     public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
 
@@ -68,5 +70,14 @@ public class AuthService {
         jwtService.updateRefreshToken(email, refreshToken);
 
         return SocialSignUpResponseDto.of(member.getUserName(), member.getRole());
+    }
+
+    public void logout(HttpServletRequest request) {
+        log.info("logout 로직 호출");
+        String accessToken = jwtService.extractAccessToken(request).orElseThrow(() -> new TokenException(INVALID_TOKEN));
+        String email = jwtService.extractEmail(accessToken).orElseThrow(() -> new TokenException(INVALID_TOKEN));
+
+        redisUtil.delete(email);
+        redisUtil.setBlackList(email, accessToken, jwtService.getAccessTokenExpirationPeriod());
     }
 }
