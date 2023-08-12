@@ -62,14 +62,14 @@ public class AuthService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
 
         // 추가 정보 업데이트
-        member.updateSocialMember(socialSignUpRequestDto.userName(), socialSignUpRequestDto.imageNum(), socialSignUpRequestDto.intro(), Role.USER);
+        member.updateSocialMember(socialSignUpRequestDto.userName(), socialSignUpRequestDto.imageNum(), socialSignUpRequestDto.intro(), Role.NOT_TEST_USER);
 
         // RefreshToken 생성 후 헤더에 보내기
         String refreshToken = jwtService.createRefreshToken(email);
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(email, refreshToken);
 
-        return SocialSignUpResponseDto.of(member.getUserName(), member.getRole());
+        return SocialSignUpResponseDto.of(member.getRole());
     }
 
     public void logout(HttpServletRequest request) {
