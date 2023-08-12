@@ -41,11 +41,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 //                User findUser = userRepository.findByEmail(oAuth2User.getEmail())
 //                                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
 //                findUser.authorizeUser();
+                String role = oAuth2User.getAuthorities().toString();
                 response.sendRedirect(UriComponentsBuilder.fromUriString("https://mapdagu.site/login/callback")
                         .queryParam("accessToken", accessToken)
+                        .queryParam("role", role.substring(6, role.length()-1))
                         .build()
                         .encode(StandardCharsets.UTF_8)
-
                         .toUriString());
             } else {
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
@@ -65,9 +66,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 //        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+        String role = oAuth2User.getAuthorities().toString();
         response.sendRedirect(UriComponentsBuilder.fromUriString("https://mapdagu.site/login/callback")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
+                .queryParam("role", role.substring(6, role.length()-1))
                 .build()
                 .encode(StandardCharsets.UTF_8)
                 .toUriString());
