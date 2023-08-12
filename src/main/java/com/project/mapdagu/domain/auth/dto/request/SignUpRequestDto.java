@@ -14,7 +14,7 @@ public record SignUpRequestDto(String nickname, String email, String password,
                 .userName(userName)
                 .imageNum(imageNum)
                 .intro(intro)
-                .role(Role.GUEST)
+                .role(Role.NOT_TEST_USER)
                 .build();
     }
 }
