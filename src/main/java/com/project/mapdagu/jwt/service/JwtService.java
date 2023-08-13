@@ -3,8 +3,6 @@ package com.project.mapdagu.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
-import com.project.mapdagu.error.ErrorCode;
-import com.project.mapdagu.error.exception.custom.TokenException;
 import com.project.mapdagu.util.RedisUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
-
-import static com.project.mapdagu.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +77,7 @@ public class JwtService {
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(accessHeader, accessToken);
-        log.info("재발급된 Access Token : {}", accessToken);
+        log.info("sendAccessToken 실행");
     }
 
     public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
@@ -164,12 +160,9 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-            if(redisUtil.hasKeyBlackList(token)) {
-                throw new TokenException(ALREADY_LOGOUT_MEMBER);
-            }
             return true;
         } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            log.info("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
     }
