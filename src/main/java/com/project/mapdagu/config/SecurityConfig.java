@@ -9,6 +9,8 @@ import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.domain.oauth2.handler.OAuth2LoginFailureHandler;
 import com.project.mapdagu.domain.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.project.mapdagu.domain.oauth2.service.CustomOAuth2UserService;
+import com.project.mapdagu.jwt.JwtAccessDeniedHandler;
+import com.project.mapdagu.jwt.JwtAuthenticationEntryPoint;
 import com.project.mapdagu.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.project.mapdagu.jwt.service.JwtService;
 import com.project.mapdagu.util.RedisUtil;
@@ -41,6 +43,8 @@ public class SecurityConfig {
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
     private final LoginService loginService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOauth2UserService;
@@ -76,7 +80,9 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint.userService(customOauth2UserService)))
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
-                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         return http.build();
     }
