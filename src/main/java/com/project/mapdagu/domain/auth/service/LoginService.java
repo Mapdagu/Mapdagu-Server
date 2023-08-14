@@ -2,7 +2,6 @@ package com.project.mapdagu.domain.auth.service;
 
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
-import com.project.mapdagu.error.ErrorCode;
 import com.project.mapdagu.error.exception.custom.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.project.mapdagu.error.ErrorCode.*;
+import static com.project.mapdagu.error.ErrorCode.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

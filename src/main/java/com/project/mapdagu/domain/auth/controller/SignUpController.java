@@ -2,12 +2,12 @@ package com.project.mapdagu.domain.auth.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.domain.auth.dto.request.EmailRequestDto;
+import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.response.EmailResponseDto;
+import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.AuthService;
-import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
-import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

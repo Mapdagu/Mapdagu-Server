@@ -1,25 +1,19 @@
 package com.project.mapdagu.domain.auth.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
-import com.project.mapdagu.domain.auth.dto.request.EmailRequestDto;
-import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
-import com.project.mapdagu.domain.auth.dto.response.EmailResponseDto;
-import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.AuthService;
-import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
-import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Auth", description = "Auth API")
 @RestController

@@ -1,10 +1,7 @@
 package com.project.mapdagu.domain.oauth2.handler;
 
-import com.project.mapdagu.domain.member.entity.Role;
-import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.domain.oauth2.CustomOAuth2User;
 import com.project.mapdagu.jwt.service.JwtService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
