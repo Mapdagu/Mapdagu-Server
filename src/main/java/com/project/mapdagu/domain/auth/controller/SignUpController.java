@@ -5,7 +5,6 @@ import com.project.mapdagu.domain.auth.dto.request.EmailRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.response.EmailResponseDto;
-import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.AuthService;
 import com.project.mapdagu.domain.auth.service.EmailService;
@@ -30,11 +29,14 @@ public class SignUpController {
     private final AuthService authService;
     private final EmailService emailService;
 
-    @Operation(summary = "자체 회원가입", description = "이메일을 사용해 회원가입을 합니다.")
+    @Operation(summary = "자체 회원가입", description = "이메일을 사용해 회원가입을 합니다.",
+            responses = {@ApiResponse(responseCode = "204", description = "자체 회원가입 성공")
+                    , @ApiResponse(responseCode = "400", description = "1. 이미 존재하는 이메일입니다. \t\n 2. 이미 존재하는 사용자 이름입니다.", content = @Content(schema = @Schema(implementation = ResponseEntity.class)))
+    })
     @PostMapping
-    public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-        SignUpResponseDto signUpResponseDto = authService.signUp(signUpRequestDto);
-        return ResponseDto.created(signUpResponseDto);
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+        authService.signUp(signUpRequestDto);
+        return ResponseDto.noContent();
     }
 
     @Operation(summary = "소셜 추가 회원가입", description = "소셜 로그인 유저 대상으로 추가 회원가입을 합니다.",

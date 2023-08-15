@@ -2,7 +2,6 @@ package com.project.mapdagu.domain.auth.service;
 
 import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
-import com.project.mapdagu.domain.auth.dto.response.SignUpResponseDto;
 import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.entity.Role;
@@ -32,7 +31,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final RedisUtil redisUtil;
 
-    public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
+    public void signUp(SignUpRequestDto signUpRequestDto) {
 
         if (memberRepository.existsByEmail(signUpRequestDto.email())) {
             throw new BusinessException(ALREADY_EXIST_EMAIL);
@@ -44,7 +43,6 @@ public class AuthService {
         Member member = signUpRequestDto.toEntity();
         member.passwordEncode(passwordEncoder);
         memberRepository.save(member);
-        return SignUpResponseDto.of(member.getId(), member.getUserName());
     }
 
     public SocialSignUpResponseDto socialSignUp(SocialSignUpRequestDto socialSignUpRequestDto, HttpServletRequest request, HttpServletResponse response) {
