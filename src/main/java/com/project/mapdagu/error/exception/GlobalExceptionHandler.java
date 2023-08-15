@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<String> handle(final Exception e) {
+    public ResponseEntity<ErrorResponse> handle(final Exception e) {
         log.error("Internal Error occurred", e);
-        return ResponseEntity.internalServerError().body(e.getMessage());
+        return ResponseEntity.internalServerError().body(ErrorResponse.of(500, e.getMessage()));
     }
 
     @ExceptionHandler
@@ -29,4 +29,5 @@ public class GlobalExceptionHandler {
         log.info("Invalid Token: {}", e);
         return ResponseEntity.status(e.getCode()).body(ErrorResponse.of(e.getCode(), e.getMessage()));
     }
+
 }
