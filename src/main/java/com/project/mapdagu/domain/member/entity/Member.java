@@ -18,10 +18,10 @@ public class Member extends BaseTimeEntity {
     private String email;
     private String password;
     private String userName;
-    private int imageNum;
+    private Integer imageNum;
     private String intro;
-    private int scoville;
-    private int level;
+    private Integer scoville;
+    private Integer level;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
@@ -29,7 +29,7 @@ public class Member extends BaseTimeEntity {
     private String socialId;    // 로그인한 소셜 타입 식별자 값 (일반 로그인의 경우 null)
 
     @Builder
-    public Member(String nickname, String email, String password, String userName, int imageNum, String intro, Role role, SocialType socialType, String socialId) {
+    public Member(String nickname, String email, String password, String userName, Integer imageNum, String intro, Role role, SocialType socialType, String socialId) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -45,14 +45,14 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    public void updateSocialMember(String userName, int imageNum, String intro, Role role) {
+    public void updateSocialMember(String userName, Integer imageNum, String intro, Role role) {
         this.userName = userName;
         this.imageNum = imageNum;
         this.intro = intro;
         this.role = role;
     }
 
-    public void updateTestInfo(int scoville, int level, Role role) {
+    public void updateTestInfo(Integer scoville, Integer level, Role role) {
         this.scoville = scoville;
         this.level = level;
         this.role = role;

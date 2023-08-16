@@ -4,7 +4,7 @@ import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.entity.Role;
 
 public record SignUpRequestDto(String nickname, String email, String password,
-                               String userName, int imageNum, String intro) {
+                               String userName, Integer imageNum, String intro) {
 
     public Member toEntity() {
         return Member.builder()
