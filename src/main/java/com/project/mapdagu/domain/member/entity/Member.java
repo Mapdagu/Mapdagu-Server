@@ -51,4 +51,10 @@ public class Member extends BaseTimeEntity {
         this.intro = intro;
         this.role = role;
     }
+
+    public void updateTestInfo(int scoville, int level, Role role) {
+        this.scoville = scoville;
+        this.level = level;
+        this.role = role;
+    }
 }
