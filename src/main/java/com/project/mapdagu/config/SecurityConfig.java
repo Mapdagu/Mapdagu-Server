@@ -81,7 +81,8 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndPoint -> userInfoEndPoint.userService(customOauth2UserService)))
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler));
+                .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         return http.build();
     }
