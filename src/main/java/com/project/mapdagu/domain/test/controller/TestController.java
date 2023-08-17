@@ -50,4 +50,17 @@ public class TestController {
         testService.saveTest(loginUser.getUsername(), testRequestDto);
         return ResponseDto.noContent();
     }
+
+    @Operation(summary = "다시 진행한 테스트 평가 수정", description = "다시 진행한 테스트 평가를 수정합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "테스트 평가 수정 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 평가를 찾을 수 없습니다", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @PatchMapping
+    public ResponseEntity<Void> updateReTest(@AuthenticationPrincipal UserDetails loginUser, @RequestBody TestRequestDto testRequestDto) {
+        testService.updateReTest(loginUser.getUsername(), testRequestDto);
+        return ResponseDto.noContent();
+    }
 }
