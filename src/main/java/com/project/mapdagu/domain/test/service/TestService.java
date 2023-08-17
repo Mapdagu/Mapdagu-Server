@@ -14,8 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.project.mapdagu.error.ErrorCode.FOOD_NOT_FOUND;
-import static com.project.mapdagu.error.ErrorCode.MEMBER_NOT_FOUND;
+import static com.project.mapdagu.error.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -39,5 +38,13 @@ public class TestService {
                 .forEach(t -> evaluationRepository.save(new Evaluation(member,
                         foodRepository.findByName(t.name()).orElseThrow(()-> new BusinessException(FOOD_NOT_FOUND)),
                         t.score())));
+    }
+
+    public void updateReTest(String email, TestRequestDto testRequestDto) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
+        for (TestRequestDto t: testRequestDto.dtoList()) {
+            Evaluation evaluation = evaluationRepository.findByMemberIdAndFoodName(member.getId(), t.name()).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
+            evaluation.updateTestScore(t.score());
+        }
     }
 }

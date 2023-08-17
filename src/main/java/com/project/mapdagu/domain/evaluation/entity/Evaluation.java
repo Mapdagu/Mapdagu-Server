@@ -31,4 +31,8 @@ public class Evaluation extends BaseTimeEntity {
         this.food = food;
         this.score = score;
     }
+
+    public void updateTestScore(Integer score) {
+        this.score = score;
+    }
 }
