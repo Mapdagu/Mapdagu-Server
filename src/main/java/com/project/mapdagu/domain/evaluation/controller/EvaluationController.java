@@ -32,7 +32,8 @@ public class EvaluationController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "맵기 평가 저장 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
-                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다 \t\n 2. 해당 음식을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "400", description = "이미 존재하는 평가입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 음식을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping
     public ResponseEntity<Void> saveEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationSaveRequestDto requestDto) {

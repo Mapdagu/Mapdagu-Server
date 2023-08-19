@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.project.mapdagu.error.ErrorCode.ALREADY_EXIST_EVALUATION;
+
 @Service
 @Slf4j
 @Transactional
@@ -27,6 +29,11 @@ public class EvaluationService {
     public void saveEvaluation(String email, EvaluationSaveRequestDto requestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         Food food = foodRepository.findByName(requestDto.name()).orElseThrow(() -> new BusinessException(ErrorCode.FOOD_NOT_FOUND));
+
+        if (evaluationRepository.findByMemberIdAndFoodName(member.getId(), food.getName()).isPresent()) {
+            throw new BusinessException(ALREADY_EXIST_EVALUATION);
+        }
+
         Evaluation evaluation = requestDto.toEntity(member, food, requestDto.score());
         evaluationRepository.save(evaluation);
     }
