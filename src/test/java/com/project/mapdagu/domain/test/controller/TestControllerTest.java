@@ -1,10 +1,6 @@
 package com.project.mapdagu.domain.test.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.mapdagu.domain.auth.controller.SignUpController;
-import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
-import com.project.mapdagu.domain.auth.service.AuthService;
-import com.project.mapdagu.domain.test.controller.TestController;
 import com.project.mapdagu.domain.test.dto.request.TestInfoRequestDto;
 import com.project.mapdagu.domain.test.dto.request.TestRequestDto;
 import com.project.mapdagu.domain.test.service.TestService;
@@ -16,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -27,8 +22,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
