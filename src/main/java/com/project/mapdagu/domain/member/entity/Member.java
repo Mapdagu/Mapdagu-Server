@@ -57,4 +57,9 @@ public class Member extends BaseTimeEntity {
         this.level = level;
         this.role = role;
     }
+
+    public void updateEvaluationInfo(Integer scoville, Integer level) {
+        this.scoville = scoville;
+        this.level = level;
+    }
 }

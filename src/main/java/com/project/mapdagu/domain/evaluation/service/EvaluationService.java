@@ -1,5 +1,6 @@
 package com.project.mapdagu.domain.evaluation.service;
 
+import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.entity.Evaluation;
 import com.project.mapdagu.domain.evaluation.repository.EvaluationRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.project.mapdagu.error.ErrorCode.ALREADY_EXIST_EVALUATION;
+import static com.project.mapdagu.error.ErrorCode.MEMBER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -36,5 +38,10 @@ public class EvaluationService {
 
         Evaluation evaluation = requestDto.toEntity(member, food, requestDto.score());
         evaluationRepository.save(evaluation);
+    }
+
+    public void saveTestInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
+        member.updateEvaluationInfo(infoRequestDto.scoville(), infoRequestDto.level());
     }
 }
