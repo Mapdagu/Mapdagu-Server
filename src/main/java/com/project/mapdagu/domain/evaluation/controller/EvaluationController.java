@@ -1,6 +1,7 @@
 package com.project.mapdagu.domain.evaluation.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.error.dto.ErrorResponse;
@@ -14,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Evaluation", description = "Evaluation API")
 @RestController
@@ -38,6 +36,19 @@ public class EvaluationController {
     @PostMapping
     public ResponseEntity<Void> saveEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationSaveRequestDto requestDto) {
         evaluationService.saveEvaluation(loginUser.getUsername(), requestDto);
+        return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "맵기 평가 후 스코빌지수, 레벨 저장", description = "맵기 평가 후 스코빌지수, 레벨을 저장합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "스코빌지수, 레벨 저장 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @PatchMapping("/info")
+    public ResponseEntity<Void> saveTestInfo(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationInfoRequestDto infoRequestDto) {
+        evaluationService.saveTestInfo(loginUser.getUsername(), infoRequestDto);
         return ResponseDto.noContent();
     }
 }
