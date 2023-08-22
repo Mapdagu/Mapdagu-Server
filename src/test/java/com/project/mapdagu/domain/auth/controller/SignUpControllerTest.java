@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
 import com.project.mapdagu.domain.auth.service.AuthService;
+import com.project.mapdagu.utils.TestUserArgumentResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser
 @ExtendWith(MockitoExtension.class)
 class SignUpControllerTest {
 
@@ -38,6 +38,7 @@ class SignUpControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(signUpController)
+                .setCustomArgumentResolvers(new TestUserArgumentResolver())
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }

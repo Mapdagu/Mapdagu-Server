@@ -2,6 +2,7 @@ package com.project.mapdagu.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mapdagu.domain.auth.service.AuthService;
+import com.project.mapdagu.utils.TestUserArgumentResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
@@ -35,6 +35,7 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(authController)
+                .setCustomArgumentResolvers(new TestUserArgumentResolver())
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
