@@ -48,7 +48,7 @@ public class EvaluationController {
             })
     @PatchMapping("/info")
     public ResponseEntity<Void> saveTestInfo(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationInfoRequestDto infoRequestDto) {
-        evaluationService.saveTestInfo(loginUser.getUsername(), infoRequestDto);
+        evaluationService.saveEvaluationInfo(loginUser.getUsername(), infoRequestDto);
         return ResponseDto.noContent();
     }
 }

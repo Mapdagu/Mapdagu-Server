@@ -40,7 +40,7 @@ public class EvaluationService {
         evaluationRepository.save(evaluation);
     }
 
-    public void saveTestInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
+    public void saveEvaluationInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         member.updateEvaluationInfo(infoRequestDto.scoville(), infoRequestDto.level());
     }
