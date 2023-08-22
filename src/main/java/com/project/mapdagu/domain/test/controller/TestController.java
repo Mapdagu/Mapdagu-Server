@@ -25,10 +25,10 @@ public class TestController {
 
     private final TestService testService;
 
-    @Operation(summary = "테스트 결과 정보 저장", description = "테스트 결과 정보(스코빌지수, 레벨)를 저장합니다.",
+    @Operation(summary = "테스트 후 스코빌지수, 레벨 저장", description = "테스트 후 스코빌지수, 레벨을 저장합니다.",
             security = { @SecurityRequirement(name = "bearer-key") },
             responses = {
-                    @ApiResponse(responseCode = "204", description = "테스트 결과 정보 저장 성공")
+                    @ApiResponse(responseCode = "204", description = "스코빌지수, 레벨 저장 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
