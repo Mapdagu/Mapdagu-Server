@@ -1,9 +1,11 @@
 package com.project.mapdagu.domain.evaluation.controller;
 
+import com.project.mapdagu.common.dto.PageResponseDto;
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.error.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,5 +69,18 @@ public class EvaluationController {
     public ResponseEntity<EvaluationGetResponseDto> getOneEvaluation(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long evaluationId) {
         EvaluationGetResponseDto responseDto = evaluationService.getOneEvaluation(loginUser.getUsername(), evaluationId);
         return ResponseDto.ok(responseDto);
+    }
+
+    @Operation(summary = "맵기 평가 목록 조회", description = "맵기 평가 목록을 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "맵기 평가 목록 조회 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping
+    public ResponseEntity<PageResponseDto> getEvaluations(@AuthenticationPrincipal UserDetails loginUser, @PageableDefault(size = 3) Pageable pageable) {
+        Page<EvaluationsGetResponseDto> responseDto = evaluationService.getEvaluations(loginUser.getUsername(), pageable);
+        return PageResponseDto.of(responseDto);
     }
 }
