@@ -3,6 +3,7 @@ package com.project.mapdagu.domain.evaluation.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.domain.test.dto.request.TestInfoRequestDto;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -20,10 +21,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,5 +74,22 @@ class EvaluationControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(evaluationService, times(1)).saveEvaluationInfo(anyString(), any());
+    }
+
+    @Test
+    void 맵기_평가_하나_조회() throws Exception {
+        //given
+        Long evaluationId = 1L;
+        EvaluationGetResponseDto responseDto = new EvaluationGetResponseDto("신라면", 1);
+
+        //when
+        when(evaluationService.getOneEvaluation(anyString(), anyLong())).thenReturn(responseDto);
+        ResultActions result = mockMvc.perform(
+                get("/api/evaluations/{evaluationId}", evaluationId)
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(evaluationService, times(1)).getOneEvaluation(anyString(), anyLong());
     }
 }
