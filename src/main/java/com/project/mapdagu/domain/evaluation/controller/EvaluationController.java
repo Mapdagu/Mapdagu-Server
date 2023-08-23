@@ -3,6 +3,7 @@ package com.project.mapdagu.domain.evaluation.controller;
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.error.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,5 +51,18 @@ public class EvaluationController {
     public ResponseEntity<Void> saveTestInfo(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationInfoRequestDto infoRequestDto) {
         evaluationService.saveEvaluationInfo(loginUser.getUsername(), infoRequestDto);
         return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "맵기 평가 하나 조회", description = "맵기 평가 하나를 id로 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "맵기 평가 조회 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 평가를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping("/{evaluationId}")
+    public ResponseEntity<EvaluationGetResponseDto> getOneEvaluation(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long evaluationId) {
+        EvaluationGetResponseDto responseDto = evaluationService.getOneEvaluation(loginUser.getUsername(), evaluationId);
+        return ResponseDto.ok(responseDto);
     }
 }
