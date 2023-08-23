@@ -3,6 +3,7 @@ package com.project.mapdagu.domain.evaluation.service;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.entity.Evaluation;
 import com.project.mapdagu.domain.evaluation.repository.EvaluationRepository;
 import com.project.mapdagu.domain.food.entity.Food;
@@ -13,6 +14,9 @@ import com.project.mapdagu.error.ErrorCode;
 import com.project.mapdagu.error.exception.custom.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,5 +53,12 @@ public class EvaluationService {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
         return EvaluationGetResponseDto.from(evaluation);
+    }
+
+    public Page<EvaluationsGetResponseDto> getEvaluations(String email, Pageable pageable) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
+        Page<Evaluation> evaluations = evaluationRepository.findByMemberId(member.getId(), pageable);
+        Page<EvaluationsGetResponseDto> responseDto = evaluations.map(e -> EvaluationsGetResponseDto.from(e));
+        return responseDto;
     }
 }
