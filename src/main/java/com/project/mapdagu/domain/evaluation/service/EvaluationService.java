@@ -2,6 +2,7 @@ package com.project.mapdagu.domain.evaluation.service;
 
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.entity.Evaluation;
 import com.project.mapdagu.domain.evaluation.repository.EvaluationRepository;
 import com.project.mapdagu.domain.food.entity.Food;
@@ -15,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.project.mapdagu.error.ErrorCode.ALREADY_EXIST_EVALUATION;
-import static com.project.mapdagu.error.ErrorCode.MEMBER_NOT_FOUND;
+import static com.project.mapdagu.error.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -43,5 +43,11 @@ public class EvaluationService {
     public void saveEvaluationInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         member.updateEvaluationInfo(infoRequestDto.scoville(), infoRequestDto.level());
+    }
+
+    public EvaluationGetResponseDto getOneEvaluation(String email, Long evaluationId) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
+        Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
+        return EvaluationGetResponseDto.from(evaluation);
     }
 }
