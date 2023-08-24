@@ -65,6 +65,19 @@ public class EvaluationController {
         return ResponseDto.noContent();
     }
 
+    @Operation(summary = "맵기 평가 삭제", description = "맵기 평가를 삭제합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "맵기 평가 삭제 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 평가를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @DeleteMapping("/{evaluationId}")
+    public ResponseEntity<Void> deleteEvaluation(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long evaluationId) {
+        evaluationService.deleteEvaluation(loginUser.getUsername(), evaluationId);
+        return ResponseDto.noContent();
+    }
+
     @Operation(summary = "맵기 평가 후 스코빌지수, 레벨 저장", description = "맵기 평가 후 스코빌지수, 레벨을 저장합니다.",
             security = { @SecurityRequirement(name = "bearer-key") },
             responses = {

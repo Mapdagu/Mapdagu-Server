@@ -54,6 +54,12 @@ public class EvaluationService {
         evaluation.updateEvaluation(requestDto.score());
     }
 
+    public void deleteEvaluation(String email, Long evaluationId) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Evaluation evaluation = evaluationRepository.findByIdAndMemberId(evaluationId, member.getId()).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
+        evaluationRepository.delete(evaluation);
+    }
+
     public void saveEvaluationInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         member.updateEvaluationInfo(infoRequestDto.scoville(), infoRequestDto.level());
