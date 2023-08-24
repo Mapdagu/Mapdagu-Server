@@ -58,10 +58,10 @@ public class EvaluationService {
         return EvaluationGetResponseDto.from(evaluation);
     }
 
-    public Page<EvaluationsGetResponseDto> getEvaluations(String email, Pageable pageable) {
+    public Slice<EvaluationsGetResponseDto> getEvaluations(String email, Pageable pageable) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
-        Page<Evaluation> evaluations = evaluationRepository.findByMemberId(member.getId(), pageable);
-        Page<EvaluationsGetResponseDto> responseDto = evaluations.map(e -> EvaluationsGetResponseDto.from(e));
+        Slice<Evaluation> evaluations = evaluationRepository.findByMemberId(member.getId(), pageable);
+        Slice<EvaluationsGetResponseDto> responseDto = evaluations.map(e -> EvaluationsGetResponseDto.from(e));
         return responseDto;
     }
 

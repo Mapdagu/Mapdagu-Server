@@ -85,9 +85,9 @@ public class EvaluationController {
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping("/me")
-    public ResponseEntity<PageResponseDto> getEvaluations(@AuthenticationPrincipal UserDetails loginUser, @PageableDefault(size = 3) Pageable pageable) {
-        Page<EvaluationsGetResponseDto> responseDto = evaluationService.getEvaluations(loginUser.getUsername(), pageable);
-        return PageResponseDto.of(responseDto);
+    public ResponseEntity<SliceResponseDto> getEvaluations(@AuthenticationPrincipal UserDetails loginUser, Pageable pageable) {
+        Slice<EvaluationsGetResponseDto> responseDto = evaluationService.getEvaluations(loginUser.getUsername(), pageable);
+        return SliceResponseDto.ok(responseDto);
     }
 
     @Operation(summary = "내가 평가한 음식 검색", description = "내가 평가한 음식을 검색합니다.",
