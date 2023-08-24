@@ -5,6 +5,7 @@ import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.common.dto.SliceResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
+import com.project.mapdagu.domain.evaluation.dto.request.EvaluationUpdateRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationSearchResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
@@ -48,6 +49,19 @@ public class EvaluationController {
     @PostMapping
     public ResponseEntity<Void> saveEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationSaveRequestDto requestDto) {
         evaluationService.saveEvaluation(loginUser.getUsername(), requestDto);
+        return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "맵기 평가 수정", description = "맵기 평가를 수정합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "맵기 평가 수정 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 평가를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @PatchMapping("/{evaluationId}")
+    public ResponseEntity<Void> updateEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestBody EvaluationUpdateRequestDto requestDto, @PathVariable Long evaluationId) {
+        evaluationService.updateEvaluation(loginUser.getUsername(), requestDto, evaluationId);
         return ResponseDto.noContent();
     }
 
