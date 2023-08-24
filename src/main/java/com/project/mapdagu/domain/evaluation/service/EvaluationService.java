@@ -3,6 +3,7 @@ package com.project.mapdagu.domain.evaluation.service;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationSearchResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.entity.Evaluation;
 import com.project.mapdagu.domain.evaluation.repository.EvaluationRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.project.mapdagu.error.ErrorCode.*;
 
@@ -60,5 +63,12 @@ public class EvaluationService {
         Page<Evaluation> evaluations = evaluationRepository.findByMemberId(member.getId(), pageable);
         Page<EvaluationsGetResponseDto> responseDto = evaluations.map(e -> EvaluationsGetResponseDto.from(e));
         return responseDto;
+    }
+
+    public Slice<EvaluationSearchResponseDto> searchEvaluation(String email, String search, Pageable pageable) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
+        Slice<Evaluation> results = evaluationRepository.findByMemberIdAndFoodNameLike(member.getId(), search, pageable);
+        Slice<EvaluationSearchResponseDto> response = results.map(e -> EvaluationSearchResponseDto.from(e));
+        return response;
     }
 }

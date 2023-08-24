@@ -18,6 +18,7 @@ public enum ErrorCode {
     FOOD_NOT_FOUND(NOT_FOUND, "해당 음식을 찾을 수 없습니다"),
     EVALUATION_NOT_FOUND(NOT_FOUND, "해당 평가를 찾을 수 없습니다"),
 
+    WRONG_SEARCH(BAD_REQUEST, "검색어를 입력해야 합니다."),
     ALREADY_EXIST_EVALUATION(BAD_REQUEST, "이미 존재하는 평가입니다."),
     ALREADY_LOGOUT_MEMBER(BAD_REQUEST, "이미 로그아웃한 회원입니다"),
     EMAIL_SEND_ERROR(BAD_REQUEST, "이메일 인증 코드 전송을 실패했습니다."),

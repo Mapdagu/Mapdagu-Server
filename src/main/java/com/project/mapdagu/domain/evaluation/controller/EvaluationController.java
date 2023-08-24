@@ -99,11 +99,11 @@ public class EvaluationController {
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping
-    public ResponseEntity<SliceResponseDto> searchEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search) {
+    public ResponseEntity<SliceResponseDto> searchEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search, Pageable pageable) {
         if (StringUtils.isEmpty(search)) {
             throw new BusinessException(ErrorCode.WRONG_SEARCH);
         }
-        Slice<EvaluationSearchResponseDto> response = evaluationService.searchEvaluation(loginUser.getUsername(), search);
+        Slice<EvaluationSearchResponseDto> response = evaluationService.searchEvaluation(loginUser.getUsername(), search, pageable);
         return SliceResponseDto.ok(response);
     }
 }
