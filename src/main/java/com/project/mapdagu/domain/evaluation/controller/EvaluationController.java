@@ -2,12 +2,16 @@ package com.project.mapdagu.domain.evaluation.controller;
 
 import com.project.mapdagu.common.dto.PageResponseDto;
 import com.project.mapdagu.common.dto.ResponseDto;
+import com.project.mapdagu.common.dto.SliceResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationSearchResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
+import com.project.mapdagu.error.ErrorCode;
 import com.project.mapdagu.error.dto.ErrorResponse;
+import com.project.mapdagu.error.exception.custom.BusinessException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,11 +21,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 @Tag(name = "Evaluation", description = "Evaluation API")
 @RestController
@@ -78,9 +84,26 @@ public class EvaluationController {
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<PageResponseDto> getEvaluations(@AuthenticationPrincipal UserDetails loginUser, @PageableDefault(size = 3) Pageable pageable) {
         Page<EvaluationsGetResponseDto> responseDto = evaluationService.getEvaluations(loginUser.getUsername(), pageable);
         return PageResponseDto.of(responseDto);
+    }
+
+    @Operation(summary = "내가 평가한 음식 검색", description = "내가 평가한 음식을 검색합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "평가한 음식 검색 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "400", description = "검색어를 입력해야 합니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping
+    public ResponseEntity<SliceResponseDto> searchEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search) {
+        if (StringUtils.isEmpty(search)) {
+            throw new BusinessException(ErrorCode.WRONG_SEARCH);
+        }
+        Slice<EvaluationSearchResponseDto> response = evaluationService.searchEvaluation(loginUser.getUsername(), search);
+        return SliceResponseDto.ok(response);
     }
 }
