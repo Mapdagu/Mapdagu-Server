@@ -2,6 +2,7 @@ package com.project.mapdagu.domain.evaluation.service;
 
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
+import com.project.mapdagu.domain.evaluation.dto.request.EvaluationUpdateRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationSearchResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
@@ -47,17 +48,25 @@ public class EvaluationService {
         evaluationRepository.save(evaluation);
     }
 
+    public void updateEvaluation(String email, EvaluationUpdateRequestDto requestDto, Long evaluationId) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        Evaluation evaluation = evaluationRepository.findByIdAndMemberId(evaluationId, member.getId()).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
+        evaluation.updateEvaluation(requestDto.score());
+    }
+
     public void saveEvaluationInfo(String email, EvaluationInfoRequestDto infoRequestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         member.updateEvaluationInfo(infoRequestDto.scoville(), infoRequestDto.level());
     }
 
+    @Transactional(readOnly = true)
     public EvaluationGetResponseDto getOneEvaluation(String email, Long evaluationId) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         Evaluation evaluation = evaluationRepository.findById(evaluationId).orElseThrow(() -> new BusinessException(EVALUATION_NOT_FOUND));
         return EvaluationGetResponseDto.from(evaluation);
     }
 
+    @Transactional(readOnly = true)
     public Slice<EvaluationsGetResponseDto> getEvaluations(String email, Pageable pageable) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         Slice<Evaluation> evaluations = evaluationRepository.findByMemberId(member.getId(), pageable);
@@ -65,6 +74,7 @@ public class EvaluationService {
         return responseDto;
     }
 
+    @Transactional(readOnly = true)
     public Slice<EvaluationSearchResponseDto> searchEvaluation(String email, String search, Pageable pageable) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
         Slice<Evaluation> results = evaluationRepository.findByMemberIdAndFoodNameLike(member.getId(), search, pageable);

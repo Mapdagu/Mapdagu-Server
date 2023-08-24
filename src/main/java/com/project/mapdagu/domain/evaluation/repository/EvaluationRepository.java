@@ -23,4 +23,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
             " where e.member.id = :memberId and e.food.name Like %:foodName% " +
             " order by e.createdDate desc ")
     Slice<Evaluation> findByMemberIdAndFoodNameLike(@Param("memberId") Long memberId, String foodName, Pageable pageable);
+
+    Optional<Evaluation> findByIdAndMemberId(Long id, Long memberId);
 }

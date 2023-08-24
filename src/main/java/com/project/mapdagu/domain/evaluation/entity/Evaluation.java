@@ -35,4 +35,6 @@ public class Evaluation extends BaseTimeEntity {
     public void updateTestScore(Integer score) {
         this.score = score;
     }
+
+    public void updateEvaluation(Integer score) { this.score = score;}
 }
