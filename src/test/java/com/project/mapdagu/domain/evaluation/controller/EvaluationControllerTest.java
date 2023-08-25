@@ -89,6 +89,22 @@ class EvaluationControllerTest {
     }
 
     @Test
+    void 맵기_평가_삭제() throws Exception {
+        //given
+        Long evaluationId = 1L;
+
+        //when
+        ResultActions result = mockMvc.perform(
+                delete("/api/evaluations/{evaluationId}", evaluationId)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        result.andExpect(status().isNoContent());
+        verify(evaluationService, times(1)).deleteEvaluation(anyString(), anyLong());
+    }
+
+    @Test
     void 맵기_평가_이후_정보_저장() throws Exception {
         //given
         EvaluationInfoRequestDto requestDto = new EvaluationInfoRequestDto(1234,3);
