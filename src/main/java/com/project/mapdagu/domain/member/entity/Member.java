@@ -62,4 +62,10 @@ public class Member extends BaseTimeEntity {
         this.scoville = scoville;
         this.level = level;
     }
+
+    public void updateMemberInfo(Integer imageNum, String userName, String intro) {
+        this.imageNum = imageNum;
+        this.userName = userName;
+        this.intro = intro;
+    }
 }
