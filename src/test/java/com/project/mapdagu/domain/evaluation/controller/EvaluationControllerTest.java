@@ -5,6 +5,7 @@ import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDt
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationUpdateRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationSearchResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -154,5 +155,26 @@ class EvaluationControllerTest {
         //then
         result.andExpect(status().isOk());
         verify(evaluationService, times(1)).getEvaluations(anyString(), any());
+    }
+
+    @Test
+    void 맵기_평가_검색() throws Exception {
+        //given
+        PageRequest pageable = PageRequest.of(0, 2);
+        List<EvaluationSearchResponseDto> dtos = new ArrayList<>();
+        dtos.add(new EvaluationSearchResponseDto("신라면", 1, 3));
+        dtos.add(new EvaluationSearchResponseDto("진라면", 2, 2));
+        Slice<EvaluationSearchResponseDto> response = new SliceImpl<>(dtos, pageable, false);
+
+        //when
+        given(evaluationService.searchEvaluation(anyString(), anyString(), any())).willReturn(response);
+        ResultActions result = mockMvc.perform(
+                get("/api/evaluations")
+                        .param("search", "라면")
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(evaluationService, times(1)).searchEvaluation(anyString(), anyString(), any());
     }
 }
