@@ -1,14 +1,12 @@
 package com.project.mapdagu.domain.evaluation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.mapdagu.common.dto.PageResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationInfoRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationSaveRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.request.EvaluationUpdateRequestDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
-import com.project.mapdagu.domain.test.dto.request.TestInfoRequestDto;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -49,7 +47,7 @@ class EvaluationControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(evaluationController)
-                .setCustomArgumentResolvers(new TestUserArgumentResolver())
+                .setCustomArgumentResolvers(new TestUserArgumentResolver(), new PageableHandlerMethodArgumentResolver())
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
@@ -138,25 +136,23 @@ class EvaluationControllerTest {
         verify(evaluationService, times(1)).getOneEvaluation(anyString(), anyLong());
     }
 
-//    @Test
-//    void 맵기_평가_목록_조회() throws Exception {
-//        //given
-//        Pageable pageable = PageRequest.of(0, 10);
-//        List<EvaluationsGetResponseDto> dtos = new ArrayList<>();
-//        dtos.add(new EvaluationsGetResponseDto("신라면", 1, 3));
-//        dtos.add(new EvaluationsGetResponseDto("진라면", 2, 2));
-//        Page<EvaluationsGetResponseDto> pageResult = new PageImpl<EvaluationsGetResponseDto>(dtos, pageable, 2);
-//
-//        //when
-////        when(evaluationService.getEvaluations(anyString(), any(Pageable.class)).getContent().
-//        ResultActions result = mockMvc.perform(
-//                get("/api/evaluations")
-//                        .param("page", "0")
-//                        .param("size", "10")
-//        );
-//
-//        //then
-//        result.andExpect(status().isOk());
-//        verify(evaluationService, times(1)).getEvaluations(anyString(), any(Pageable.class));
-//    }
+    @Test
+    void 맵기_평가_목록_조회() throws Exception {
+        //given
+        PageRequest pageable = PageRequest.of(0, 2);
+        List<EvaluationsGetResponseDto> dtos = new ArrayList<>();
+        dtos.add(new EvaluationsGetResponseDto("신라면", 1, 3));
+        dtos.add(new EvaluationsGetResponseDto("진라면", 2, 2));
+        Slice<EvaluationsGetResponseDto> response = new SliceImpl<>(dtos, pageable, false);
+
+        //when
+        given(evaluationService.getEvaluations(anyString(), any())).willReturn(response);
+        ResultActions result = mockMvc.perform(
+                get("/api/evaluations/me")
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(evaluationService, times(1)).getEvaluations(anyString(), any());
+    }
 }
