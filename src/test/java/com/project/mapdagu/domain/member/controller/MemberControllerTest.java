@@ -9,6 +9,7 @@ import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseD
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.domain.member.dto.request.MemberUpdateInfoRequestDto;
+import com.project.mapdagu.domain.member.dto.response.MemberReadInfoResponseDto;
 import com.project.mapdagu.domain.member.service.MemberService;
 import com.project.mapdagu.domain.test.dto.request.TestInfoRequestDto;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -71,5 +72,21 @@ class MemberControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(memberService, times(1)).updateMemberInfo(anyString(), any());
+    }
+
+    @Test
+    void 프로필_정보_조회() throws Exception {
+        //given
+        MemberReadInfoResponseDto response = new MemberReadInfoResponseDto(5, "test", "안녕하세요!");
+
+        //when
+        given(memberService.readMemberInfo(anyString())).willReturn(response);
+        ResultActions result = mockMvc.perform(
+                get("/api/members/me/info")
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(memberService, times(1)).readMemberInfo(anyString());
     }
 }
