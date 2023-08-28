@@ -2,6 +2,7 @@ package com.project.mapdagu.domain.member.service;
 
 import com.project.mapdagu.domain.member.dto.request.MemberUpdateInfoRequestDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadInfoResponseDto;
+import com.project.mapdagu.domain.member.dto.response.MemberReadMainResponseDto;
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.error.ErrorCode;
@@ -27,6 +28,12 @@ public class MemberService {
     public MemberReadInfoResponseDto readMemberInfo(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         MemberReadInfoResponseDto response = MemberReadInfoResponseDto.of(member.getImageNum(), member.getUserName(), member.getIntro());
+        return response;
+    }
+
+    public MemberReadMainResponseDto readMainInfo(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        MemberReadMainResponseDto response = MemberReadMainResponseDto.of(member.getUserName(), member.getLevel());
         return response;
     }
 }
