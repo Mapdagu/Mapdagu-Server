@@ -16,10 +16,12 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     Optional<Evaluation> findByMemberIdAndFoodName(@Param("memberId") Long memberId, @Param("foodName") String foodName);
 
     @Query("select e from Evaluation e " +
+            "   join fetch e.food " +
             "   where e.member.id =:memberId order by e.createdDate DESC ")
     Slice<Evaluation> findByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query("select e from Evaluation e " +
+            "   join fetch e.food " +
             " where e.member.id = :memberId and e.food.name Like %:foodName% " +
             " order by e.createdDate desc ")
     Slice<Evaluation> findByMemberIdAndFoodNameLike(@Param("memberId") Long memberId, String foodName, Pageable pageable);
