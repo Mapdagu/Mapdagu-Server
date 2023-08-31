@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,10 +46,9 @@ class AuthControllerTest {
         //when
         ResultActions result = mockMvc.perform(
                 post("/api/auth/logout")
-                        .contentType(MediaType.APPLICATION_JSON)
         );
         //then
         result.andExpect(status().isNoContent());
-        verify(authService, times(1)).logout(any());
+        verify(authService, times(1)).logout(any(), anyString());
     }
 }
