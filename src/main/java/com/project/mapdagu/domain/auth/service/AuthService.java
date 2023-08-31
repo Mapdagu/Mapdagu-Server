@@ -68,10 +68,9 @@ public class AuthService {
         return SocialSignUpResponseDto.of(member.getRole());
     }
 
-    public void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request, String email) {
         log.info("logout 로직 호출");
         String accessToken = jwtService.extractAccessToken(request).orElseThrow(() -> new TokenException(INVALID_TOKEN));
-        String email = jwtService.extractEmail(accessToken).orElseThrow(() -> new TokenException(INVALID_TOKEN));
 
         redisUtil.delete(email);
         redisUtil.setBlackList(email, accessToken, jwtService.getAccessTokenExpirationPeriod());
