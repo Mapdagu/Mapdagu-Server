@@ -31,7 +31,7 @@ public class MemberController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "회원 정보 수정 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
-                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. /t/n 2. 현재 사용자 이름과 동일합니다. /t/n 3. 이미 존재하는 사용자 이름입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PatchMapping("/me/info")
     public ResponseEntity<Void> updateMemberInfo(@AuthenticationPrincipal UserDetails loginUser, @RequestBody MemberUpdateInfoRequestDto requestDto) {
