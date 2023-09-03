@@ -36,7 +36,7 @@ public class MemberService {
 
     public MemberReadMainResponseDto readMainInfo(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-        MemberReadMainResponseDto response = MemberReadMainResponseDto.of(member.getUserName(), member.getLevel());
+        MemberReadMainResponseDto response = MemberReadMainResponseDto.of(member.getUserName(), member.getLevel(), member.getImageNum());
         return response;
     }
 }

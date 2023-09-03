@@ -52,10 +52,10 @@ public class MemberController {
         return ResponseDto.ok(responseDto);
     }
 
-    @Operation(summary = "메인 - 사용자 이름, 레벨 조회", description = "자신의 사용자 이름, 레벨을 조회합니다.",
+    @Operation(summary = "메인 - 사용자 이름, 레벨, 이미지 번호 조회", description = "자신의 사용자 이름, 레벨, 이미지 번호를 조회합니다.",
             security = { @SecurityRequirement(name = "bearer-key") },
             responses = {
-                    @ApiResponse(responseCode = "200", description = " 사용자 이름, 레벨 조회 성공")
+                    @ApiResponse(responseCode = "200", description = " 사용자 이름, 레벨, 이미지 번호 조회 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
