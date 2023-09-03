@@ -94,7 +94,7 @@ class MemberControllerTest {
     @Test
     void 메인_사용자_이름_레벨_조회() throws Exception {
         //given
-        MemberReadMainResponseDto response = new MemberReadMainResponseDto("test", 8);
+        MemberReadMainResponseDto response = new MemberReadMainResponseDto("test", 8, 2);
 
         //when
         given(memberService.readMainInfo(anyString())).willReturn(response);
