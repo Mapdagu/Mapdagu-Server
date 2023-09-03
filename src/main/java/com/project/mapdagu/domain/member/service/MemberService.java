@@ -22,9 +22,6 @@ public class MemberService {
 
     public void updateMemberInfo(String email, MemberUpdateInfoRequestDto requestDto) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-        if(member.getUserName().equals(requestDto.userName())) {
-            throw new BusinessException(ErrorCode.SAME_USERNAME);
-        }
         if (memberRepository.existsByUserName(requestDto.userName())) {
             throw new BusinessException(ErrorCode.ALREADY_EXIST_USERNAME);
         }
