@@ -1,6 +1,8 @@
 package com.project.mapdagu.domain.food.controller;
 
+import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.common.dto.SliceResponseDto;
+import com.project.mapdagu.domain.food.dto.response.FoodScovilleSearchResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodSearchResponseDto;
 import com.project.mapdagu.domain.food.service.FoodService;
 import com.project.mapdagu.error.ErrorCode;
@@ -38,7 +40,6 @@ public class FoodController {
                     @ApiResponse(responseCode = "200", description = "음식 검색 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "400", description = "검색어를 입력해야 합니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping
     public ResponseEntity<SliceResponseDto> searchFood(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search, Pageable pageable) {
@@ -47,5 +48,22 @@ public class FoodController {
         }
         Slice<FoodSearchResponseDto> response = foodService.searchFood(loginUser.getUsername(), search, pageable);
         return SliceResponseDto.ok(response);
+    }
+
+    @Operation(summary = "음식 스코빌 지수 검색", description = "음식 스코빌 지수를 검색합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "음식 스코빌 지수 검색 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "400", description = "검색어를 입력해야 합니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "404", description = "해당 음식을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping("/scoville")
+    public ResponseEntity<FoodScovilleSearchResponseDto> searchFoodScoville(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search) {
+        if (StringUtils.isEmpty(search)) {
+            throw new BusinessException(ErrorCode.WRONG_SEARCH);
+        }
+        FoodScovilleSearchResponseDto response = foodService.searchFoodScoville(loginUser.getUsername(), search);
+        return ResponseDto.ok(response);
     }
 }
