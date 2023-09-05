@@ -1,6 +1,7 @@
 package com.project.mapdagu.domain.food.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mapdagu.domain.food.dto.response.FoodScovilleSearchResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodSearchResponseDto;
 import com.project.mapdagu.domain.food.service.FoodService;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -67,5 +68,22 @@ class FoodControllerTest {
         //then
         result.andExpect(status().isOk());
         verify(foodService, times(1)).searchFood(anyString(), anyString(), any());
+    }
+
+    @Test
+    void 음식_스코빌_지수_검색() throws Exception {
+        //given
+        FoodScovilleSearchResponseDto responseDto = new FoodScovilleSearchResponseDto("신라면", 1, 3400);
+
+        //when
+        given(foodService.searchFoodScoville(anyString(), anyString())).willReturn(responseDto);
+        ResultActions result = mockMvc.perform(
+                get("/api/food/scoville")
+                        .param("search", "신라면")
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(foodService, times(1)).searchFoodScoville(anyString(), anyString());
     }
 }
