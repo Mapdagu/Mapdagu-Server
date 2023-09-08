@@ -1,5 +1,6 @@
 package com.project.mapdagu.domain.friend.controller;
 
+import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.common.dto.SliceResponseDto;
 import com.project.mapdagu.domain.friend.dto.response.FriendSearchResponseDto;
 import com.project.mapdagu.domain.friend.service.FriendService;
@@ -18,10 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 @Tag(name = "Friend", description = "Friend API")
@@ -47,5 +45,18 @@ public class FriendController {
         }
         Slice<FriendSearchResponseDto> response = friendService.searchMember(loginUser.getUsername(), search, pageable);
         return SliceResponseDto.ok(response);
+    }
+
+    @Operation(summary = "친구 추가", description = "친구를 추가합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "친구 추가 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @PostMapping("/{friendId}")
+    public ResponseEntity<Void> saveFriend(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
+        friendService.saveFriend(loginUser.getUsername(), friendId);
+        return ResponseDto.noContent();
     }
 }

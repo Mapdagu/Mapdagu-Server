@@ -3,10 +3,7 @@ package com.project.mapdagu.domain.friend.entity;
 import com.project.mapdagu.common.entity.BaseTimeEntity;
 import com.project.mapdagu.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,4 +23,9 @@ public class Friend extends BaseTimeEntity {
     @JoinColumn(name = "friendId")
     private Member friend;
 
+    @Builder
+    public Friend(Member member, Member friend) {
+        this.member = member;
+        this.friend = friend;
+    }
 }
