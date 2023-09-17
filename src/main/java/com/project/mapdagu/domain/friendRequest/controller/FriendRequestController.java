@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Friend Request", description = "Friend Request API")
 @RestController
@@ -36,6 +33,19 @@ public class FriendRequestController {
     @PostMapping("/{friendId}")
     public ResponseEntity<Void> saveFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
         friendRequestService.saveFriendRequest(loginUser.getUsername(), friendId);
+        return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "친구 요청 삭제", description = "친구 요청을 삭제합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "친구 요청 삭제 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<Void> deleteFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
+        friendRequestService.deleteFriendRequest(loginUser.getUsername(), friendId);
         return ResponseDto.noContent();
     }
 }
