@@ -1,8 +1,6 @@
 package com.project.mapdagu.domain.friendRequest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.mapdagu.domain.friend.controller.FriendController;
-import com.project.mapdagu.domain.friend.service.FriendService;
 import com.project.mapdagu.domain.friendRequest.service.FriendRequestService;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +19,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,6 +54,21 @@ class FriendRequestControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(friendRequestService, times(1)).saveFriendRequest(anyString(), anyLong());
+    }
+
+    @Test
+    void 친구_요청_삭제() throws Exception {
+        //given
+        Long friendId = 1L;
+
+        // when
+        ResultActions result = mockMvc.perform(
+                delete("/api/friends/request/{friendId}", friendId)
+        );
+
+        //then
+        result.andExpect(status().isNoContent());
+        verify(friendRequestService, times(1)).deleteFriendRequest(anyString(), anyLong());
     }
 
 }
