@@ -142,8 +142,8 @@ class EvaluationControllerTest {
         //given
         PageRequest pageable = PageRequest.of(0, 2);
         List<EvaluationsGetResponseDto> dtos = new ArrayList<>();
-        dtos.add(new EvaluationsGetResponseDto(1L, "신라면", 1, 3));
-        dtos.add(new EvaluationsGetResponseDto(2L, "진라면", 2, 2));
+        dtos.add(new EvaluationsGetResponseDto(1L, "신라면", 3400, 1, 3));
+        dtos.add(new EvaluationsGetResponseDto(2L, "진라면", 1270, 2, 2));
         Slice<EvaluationsGetResponseDto> response = new SliceImpl<>(dtos, pageable, false);
 
         //when
