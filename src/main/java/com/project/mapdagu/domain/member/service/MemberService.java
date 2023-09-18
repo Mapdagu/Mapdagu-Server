@@ -1,8 +1,10 @@
 package com.project.mapdagu.domain.member.service;
 
 import com.project.mapdagu.domain.member.dto.request.MemberUpdateInfoRequestDto;
+import com.project.mapdagu.domain.member.dto.request.MemberUserNameRequestDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadInfoResponseDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadMainResponseDto;
+import com.project.mapdagu.domain.member.dto.response.MemberUserNameResponseDto;
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
 import com.project.mapdagu.error.ErrorCode;
@@ -34,6 +36,12 @@ public class MemberService {
     public MemberReadMainResponseDto readMainInfo(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         MemberReadMainResponseDto response = MemberReadMainResponseDto.of(member.getUserName(), member.getLevel(), member.getImageNum());
+        return response;
+    }
+
+    public MemberUserNameResponseDto checkUserName(MemberUserNameRequestDto requestDto) {
+        Boolean isDuplicated = memberRepository.existsByUserName(requestDto.userName());
+        MemberUserNameResponseDto response = MemberUserNameResponseDto.of(isDuplicated);
         return response;
     }
 }

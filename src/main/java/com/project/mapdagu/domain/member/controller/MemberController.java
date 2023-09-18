@@ -2,8 +2,10 @@ package com.project.mapdagu.domain.member.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.domain.member.dto.request.MemberUpdateInfoRequestDto;
+import com.project.mapdagu.domain.member.dto.request.MemberUserNameRequestDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadInfoResponseDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadMainResponseDto;
+import com.project.mapdagu.domain.member.dto.response.MemberUserNameResponseDto;
 import com.project.mapdagu.domain.member.service.MemberService;
 import com.project.mapdagu.error.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +64,18 @@ public class MemberController {
     @GetMapping("/me/main")
     public ResponseEntity<MemberReadMainResponseDto> readMainInfo(@AuthenticationPrincipal UserDetails loginUser) {
         MemberReadMainResponseDto responseDto = memberService.readMainInfo(loginUser.getUsername());
+        return ResponseDto.ok(responseDto);
+    }
+
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "회원 정보 수정 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. /t/n 2. 현재 사용자 이름과 동일합니다. /t/n 3. 이미 존재하는 사용자 이름입니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @PostMapping("/userName/isDuplicated")
+    public ResponseEntity<MemberUserNameResponseDto> checkUserName(@RequestBody MemberUserNameRequestDto requestDto) {
+        MemberUserNameResponseDto responseDto = memberService.checkUserName(requestDto);
         return ResponseDto.ok(responseDto);
     }
 }
