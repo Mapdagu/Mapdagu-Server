@@ -9,8 +9,10 @@ import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseD
 import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
 import com.project.mapdagu.domain.evaluation.service.EvaluationService;
 import com.project.mapdagu.domain.member.dto.request.MemberUpdateInfoRequestDto;
+import com.project.mapdagu.domain.member.dto.request.MemberUserNameRequestDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadInfoResponseDto;
 import com.project.mapdagu.domain.member.dto.response.MemberReadMainResponseDto;
+import com.project.mapdagu.domain.member.dto.response.MemberUserNameResponseDto;
 import com.project.mapdagu.domain.member.service.MemberService;
 import com.project.mapdagu.domain.test.dto.request.TestInfoRequestDto;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -105,5 +107,24 @@ class MemberControllerTest {
         //then
         result.andExpect(status().isOk());
         verify(memberService, times(1)).readMainInfo(anyString());
+    }
+
+    @Test
+    void 회원_이름_중복_검사() throws Exception {
+        //given
+        MemberUserNameRequestDto requestDto = new MemberUserNameRequestDto("test");
+        MemberUserNameResponseDto response = new MemberUserNameResponseDto(true);
+
+        //when
+        given(memberService.checkUserName(requestDto)).willReturn(response);
+        ResultActions result = mockMvc.perform(
+                post("/api/members/userName/isDuplicated")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto))
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(memberService, times(1)).checkUserName(requestDto);
     }
 }
