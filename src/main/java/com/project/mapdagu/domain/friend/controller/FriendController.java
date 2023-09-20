@@ -39,7 +39,7 @@ public class FriendController {
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping
-    public ResponseEntity<SliceResponseDto> searchEvaluation(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search, Pageable pageable) {
+    public ResponseEntity<SliceResponseDto> searchMember(@AuthenticationPrincipal UserDetails loginUser, @RequestParam String search, Pageable pageable) {
         if (StringUtils.isEmpty(search)) {
             throw new BusinessException(ErrorCode.WRONG_SEARCH);
         }
@@ -57,6 +57,19 @@ public class FriendController {
     @PostMapping("/{friendId}")
     public ResponseEntity<Void> saveFriend(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
         friendService.saveFriend(loginUser.getUsername(), friendId);
+        return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "친구 삭제", description = "친구를 삭제합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "친구 삭제 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 회원과 친구가 아닙니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<Void> deleteFriend(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
+        friendService.deleteFriend(loginUser.getUsername(), friendId);
         return ResponseDto.noContent();
     }
 }
