@@ -26,8 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -82,5 +81,20 @@ class FriendControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(friendService, times(1)).saveFriend(anyString(), anyLong());
+    }
+
+    @Test
+    void 친구_요청_삭제() throws Exception {
+        //given
+        Long friendId = 1L;
+
+        // when
+        ResultActions result = mockMvc.perform(
+                delete("/api/friends/{friendId}", friendId)
+        );
+
+        //then
+        result.andExpect(status().isNoContent());
+        verify(friendService, times(1)).deleteFriend(anyString(), anyLong());
     }
 }
