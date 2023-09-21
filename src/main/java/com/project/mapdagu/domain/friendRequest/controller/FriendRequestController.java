@@ -1,6 +1,8 @@
 package com.project.mapdagu.domain.friendRequest.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
+import com.project.mapdagu.common.dto.SliceResponseDto;
+import com.project.mapdagu.domain.friendRequest.dto.response.FriendRequestsGetResponseDto;
 import com.project.mapdagu.domain.friendRequest.service.FriendRequestService;
 import com.project.mapdagu.error.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,11 +45,24 @@ public class FriendRequestController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "친구 요청 삭제 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
-                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 친구 요청을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> deleteFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
         friendRequestService.deleteFriendRequest(loginUser.getUsername(), friendId);
         return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "친구 요청 목록 조회", description = "친구 요청 목록을 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "친구 요청 목록 조회 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping
+    public ResponseEntity<SliceResponseDto> getAllFriendRequest(@AuthenticationPrincipal UserDetails loginUser, Pageable pageable) {
+        Slice<FriendRequestsGetResponseDto> response = friendRequestService.getAllFriendRequest(loginUser.getUsername(), pageable);
+        return SliceResponseDto.ok(response);
     }
 }

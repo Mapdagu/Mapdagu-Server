@@ -14,10 +14,10 @@ public enum ErrorCode {
     TOKEN_NOT_EXIST(NOT_FOUND, "토큰이 존재하지 않습니다."),
     INVALID_TOKEN(UNAUTHORIZED, "잘못된 토큰입니다."),
 
-    MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원을 찾을 수 없습니다"),
-    FOOD_NOT_FOUND(NOT_FOUND, "해당 음식을 찾을 수 없습니다"),
-    EVALUATION_NOT_FOUND(NOT_FOUND, "해당 평가를 찾을 수 없습니다"),
-    FRIEND_REQUEST_NOT_FOUND(NOT_FOUND, "해당 친구 요청을 찾을 수 없습니다"),
+    MEMBER_NOT_FOUND(NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
+    FOOD_NOT_FOUND(NOT_FOUND, "해당 음식을 찾을 수 없습니다."),
+    EVALUATION_NOT_FOUND(NOT_FOUND, "해당 평가를 찾을 수 없습니다."),
+    FRIEND_REQUEST_NOT_FOUND(NOT_FOUND, "해당 친구 요청을 찾을 수 없습니다."),
     FRIEND_NOT_FOUND(NOT_FOUND, "해당 회원과 친구가 아닙니다."),
 
     WRONG_SEARCH(BAD_REQUEST, "검색어를 입력해야 합니다."),
