@@ -8,7 +8,6 @@ import com.project.mapdagu.domain.auth.dto.response.EmailResponseDto;
 import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
 import com.project.mapdagu.domain.auth.service.AuthService;
 import com.project.mapdagu.domain.auth.service.EmailService;
-import com.project.mapdagu.error.ErrorCode;
 import com.project.mapdagu.error.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,10 +1,10 @@
 package com.project.mapdagu.common.dto;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public record PageResponseDto<T>(
         List<T> content,

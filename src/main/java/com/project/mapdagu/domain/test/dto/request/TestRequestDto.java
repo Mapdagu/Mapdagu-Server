@@ -3,7 +3,6 @@ package com.project.mapdagu.domain.test.dto.request;
 import com.project.mapdagu.domain.evaluation.entity.Evaluation;
 import com.project.mapdagu.domain.food.entity.Food;
 import com.project.mapdagu.domain.member.entity.Member;
-import com.project.mapdagu.domain.member.entity.Role;
 
 import java.util.List;
 
