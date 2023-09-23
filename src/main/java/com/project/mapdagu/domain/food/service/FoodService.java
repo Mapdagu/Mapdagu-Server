@@ -21,13 +21,13 @@ public class FoodService {
 
     private final FoodRepository foodRepository;
 
-    public Slice<FoodSearchResponseDto> searchFood(String email, String search, Pageable pageable) {
+    public Slice<FoodSearchResponseDto> searchFood(String search, Pageable pageable) {
         Slice<Food> result = foodRepository.findByNameContaining(search);
         Slice<FoodSearchResponseDto> response = result.map(f -> FoodSearchResponseDto.from(f));
         return response;
     }
 
-    public FoodScovilleSearchResponseDto searchFoodScoville(String email, String search) {
+    public FoodScovilleSearchResponseDto searchFoodScoville(String search) {
         Food food = foodRepository.findByName(search).orElseThrow(() -> new BusinessException(ErrorCode.FOOD_NOT_FOUND));
         FoodScovilleSearchResponseDto response = FoodScovilleSearchResponseDto.from(food);
         return response;

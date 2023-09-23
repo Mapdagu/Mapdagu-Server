@@ -59,7 +59,7 @@ class FoodControllerTest {
         Slice<FoodSearchResponseDto> response = new SliceImpl<>(dtos, pageable, false);
 
         //when
-        given(foodService.searchFood(anyString(), anyString(), any())).willReturn(response);
+        given(foodService.searchFood(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
                 get("/api/food")
                         .param("search", "라면")
@@ -67,7 +67,7 @@ class FoodControllerTest {
 
         //then
         result.andExpect(status().isOk());
-        verify(foodService, times(1)).searchFood(anyString(), anyString(), any());
+        verify(foodService, times(1)).searchFood(anyString(), any());
     }
 
     @Test
@@ -76,7 +76,7 @@ class FoodControllerTest {
         FoodScovilleSearchResponseDto responseDto = new FoodScovilleSearchResponseDto("신라면", 1, 3400);
 
         //when
-        given(foodService.searchFoodScoville(anyString(), anyString())).willReturn(responseDto);
+        given(foodService.searchFoodScoville(anyString())).willReturn(responseDto);
         ResultActions result = mockMvc.perform(
                 get("/api/food/scoville")
                         .param("search", "신라면")
@@ -84,6 +84,6 @@ class FoodControllerTest {
 
         //then
         result.andExpect(status().isOk());
-        verify(foodService, times(1)).searchFoodScoville(anyString(), anyString());
+        verify(foodService, times(1)).searchFoodScoville(anyString());
     }
 }
