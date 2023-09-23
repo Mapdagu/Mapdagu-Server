@@ -30,7 +30,7 @@ public class FriendRequestController {
     @Operation(summary = "친구 요청", description = "친구를 요청합니다.",
             security = { @SecurityRequirement(name = "bearer-key") },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "친구 요청 성공")
+                    @ApiResponse(responseCode = "204", description = "친구 요청 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
@@ -43,7 +43,7 @@ public class FriendRequestController {
     @Operation(summary = "친구 요청 삭제", description = "친구 요청을 삭제합니다.",
             security = { @SecurityRequirement(name = "bearer-key") },
             responses = {
-                    @ApiResponse(responseCode = "200", description = "친구 요청 삭제 성공")
+                    @ApiResponse(responseCode = "204", description = "친구 요청 삭제 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 친구 요청을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
