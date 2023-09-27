@@ -34,9 +34,9 @@ public class FriendRequestController {
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
-    @PostMapping("/{friendId}")
-    public ResponseEntity<Void> saveFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
-        friendRequestService.saveFriendRequest(loginUser.getUsername(), friendId);
+    @PostMapping("/{memberId}")
+    public ResponseEntity<Void> saveFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long memberId) {
+        friendRequestService.saveFriendRequest(loginUser.getUsername(), memberId);
         return ResponseDto.noContent();
     }
 
@@ -47,9 +47,9 @@ public class FriendRequestController {
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
                     , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 친구 요청을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
-    @DeleteMapping("/{friendId}")
-    public ResponseEntity<Void> deleteFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long friendId) {
-        friendRequestService.deleteFriendRequest(loginUser.getUsername(), friendId);
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Void> deleteFriendRequest(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long memberId) {
+        friendRequestService.deleteFriendRequest(loginUser.getUsername(), memberId);
         return ResponseDto.noContent();
     }
 
