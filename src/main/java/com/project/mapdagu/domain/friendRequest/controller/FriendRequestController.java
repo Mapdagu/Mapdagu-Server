@@ -32,6 +32,7 @@ public class FriendRequestController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "친구 요청 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "400", description = "이미 보낸 친구 요청입니다.")
                     , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping("/{memberId}")

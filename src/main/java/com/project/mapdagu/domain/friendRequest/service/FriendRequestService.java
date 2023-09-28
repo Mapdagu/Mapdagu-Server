@@ -26,6 +26,8 @@ public class FriendRequestService {
     public void saveFriendRequest(String email, Long friendId) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         Member friend = memberRepository.findById(friendId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        if (friendRequestRepository.findByFromMemberAndToMember(member, friend).isPresent())
+            throw new BusinessException(ErrorCode.ALREADY_EXIST_FRIEND_REQUEST);
         friendRequestRepository.save(new FriendRequest(member, friend));
     }
 
