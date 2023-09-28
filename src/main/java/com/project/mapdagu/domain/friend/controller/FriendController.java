@@ -2,6 +2,8 @@ package com.project.mapdagu.domain.friend.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.common.dto.SliceResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationsGetResponseDto;
+import com.project.mapdagu.domain.friend.dto.response.FriendGetAllResponseDto;
 import com.project.mapdagu.domain.friend.dto.response.FriendSearchResponseDto;
 import com.project.mapdagu.domain.friend.service.FriendService;
 import com.project.mapdagu.error.ErrorCode;
@@ -72,5 +74,18 @@ public class FriendController {
     public ResponseEntity<Void> deleteFriend(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long memberId) {
         friendService.deleteFriend(loginUser.getUsername(), memberId);
         return ResponseDto.noContent();
+    }
+
+    @Operation(summary = "친구 목록 조회", description = "친구 목록을 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "친구 목록 조회 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping("/me")
+    public ResponseEntity<SliceResponseDto> getFriends(@AuthenticationPrincipal UserDetails loginUser, Pageable pageable) {
+        Slice<FriendGetAllResponseDto> responseDto = friendService.getFriends(loginUser.getUsername(), pageable);
+        return SliceResponseDto.ok(responseDto);
     }
 }
