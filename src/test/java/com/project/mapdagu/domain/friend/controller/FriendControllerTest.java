@@ -1,6 +1,7 @@
 package com.project.mapdagu.domain.friend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mapdagu.domain.friend.dto.response.FriendGetAllResponseDto;
 import com.project.mapdagu.domain.friend.dto.response.FriendSearchResponseDto;
 import com.project.mapdagu.domain.friend.service.FriendService;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
@@ -96,5 +97,25 @@ class FriendControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(friendService, times(1)).deleteFriend(anyString(), anyLong());
+    }
+
+    @Test
+    void 친구_목록_조회() throws Exception {
+        //given
+        PageRequest pageable = PageRequest.of(0, 2);
+        List<FriendGetAllResponseDto> dtos = new ArrayList<>();
+        dtos.add(new FriendGetAllResponseDto(1L, 2, "test1", 5));
+        dtos.add(new FriendGetAllResponseDto(2L, 4, "test2", 9));
+        Slice<FriendGetAllResponseDto> response = new SliceImpl<>(dtos, pageable, false);
+
+        //when
+        given(friendService.getFriends(anyString(), any())).willReturn(response);
+        ResultActions result = mockMvc.perform(
+                get("/api/friends/me")
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(friendService, times(1)).getFriends(anyString(), any());
     }
 }
