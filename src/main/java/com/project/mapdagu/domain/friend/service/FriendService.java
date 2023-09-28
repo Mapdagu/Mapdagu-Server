@@ -36,6 +36,8 @@ public class FriendService {
     public void saveFriend(String email, Long friendId) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         Member friend = memberRepository.findById(friendId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        if (friendRepository.findByMemberAndFriend(member, friend).isPresent() || friendRepository.findByMemberAndFriend(friend, member).isPresent())
+            throw new BusinessException(ErrorCode.ALREADY_EXIST_FRIEND);
         FriendRequest friendRequest = friendRequestRepository.findByFromMemberAndToMember(friend, member).orElseThrow(() -> new BusinessException(ErrorCode.FRIEND_REQUEST_NOT_FOUND));
         friendRequestRepository.delete(friendRequest);
         friendRepository.save(new Friend(member, friend));

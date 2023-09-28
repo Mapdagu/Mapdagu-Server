@@ -52,7 +52,8 @@ public class FriendController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "친구 추가 성공")
                     , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
-                    , @ApiResponse(responseCode = "404", description = "해당 회원을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    , @ApiResponse(responseCode = "400", description = "이미 상대방과 친구입니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 친구 요청을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping("/{memberId}")
     public ResponseEntity<Void> saveFriend(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long memberId) {
