@@ -34,7 +34,10 @@ public class FriendRequestService {
     public void deleteFriendRequest(String email, Long friendId) {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         Member friend = memberRepository.findById(friendId).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-        FriendRequest friendRequest = friendRequestRepository.findByFromMemberAndToMember(member, friend).orElseThrow(() -> new BusinessException(ErrorCode.FRIEND_REQUEST_NOT_FOUND));
+        FriendRequest friendRequest = friendRequestRepository.findByFromMemberAndToMember(member, friend).orElse(null);
+        if (friendRequest == null) {
+            friendRequest = friendRequestRepository.findByFromMemberAndToMember(friend, member).orElseThrow(() -> new BusinessException(ErrorCode.FRIEND_REQUEST_NOT_FOUND));
+        }
         friendRequestRepository.delete(friendRequest);
     }
 
