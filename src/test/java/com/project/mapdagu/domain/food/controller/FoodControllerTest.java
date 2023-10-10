@@ -1,6 +1,8 @@
 package com.project.mapdagu.domain.food.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.food.dto.response.FoodGetResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodScovilleSearchResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodSearchResponseDto;
 import com.project.mapdagu.domain.food.service.FoodService;
@@ -24,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +63,7 @@ class FoodControllerTest {
         //when
         given(foodService.searchFood(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/food")
+                get("/api/foods")
                         .param("search", "라면")
         );
 
@@ -78,12 +80,29 @@ class FoodControllerTest {
         //when
         given(foodService.searchFoodScoville(anyString())).willReturn(responseDto);
         ResultActions result = mockMvc.perform(
-                get("/api/food/scoville")
+                get("/api/foods/scoville")
                         .param("search", "신라면")
         );
 
         //then
         result.andExpect(status().isOk());
         verify(foodService, times(1)).searchFoodScoville(anyString());
+    }
+
+    @Test
+    void 음식_상세_정보_조회() throws Exception {
+        //given
+        Long foodId = 1L;
+        FoodGetResponseDto responseDto = new FoodGetResponseDto(foodId, "신라면", 1, true, 5);
+
+        //when
+        when(foodService.getOneFood(anyString(), anyLong())).thenReturn(responseDto);
+        ResultActions result = mockMvc.perform(
+                get("/api/foods/{foodId}", foodId)
+        );
+
+        //then
+        result.andExpect(status().isOk());
+        verify(foodService, times(1)).getOneFood(anyString(), anyLong());
     }
 }
