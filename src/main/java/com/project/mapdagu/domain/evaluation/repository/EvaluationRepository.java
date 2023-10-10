@@ -27,4 +27,6 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
     Slice<Evaluation> findByMemberIdAndFoodNameLike(@Param("memberId") Long memberId, String foodName, Pageable pageable);
 
     Optional<Evaluation> findByIdAndMemberId(Long id, Long memberId);
+
+    Optional<Evaluation> findByMemberIdAndFoodId(Long memberId, Long foodId);
 }
