@@ -2,6 +2,8 @@ package com.project.mapdagu.domain.food.controller;
 
 import com.project.mapdagu.common.dto.ResponseDto;
 import com.project.mapdagu.common.dto.SliceResponseDto;
+import com.project.mapdagu.domain.evaluation.dto.response.EvaluationGetResponseDto;
+import com.project.mapdagu.domain.food.dto.response.FoodGetResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodScovilleSearchResponseDto;
 import com.project.mapdagu.domain.food.dto.response.FoodSearchResponseDto;
 import com.project.mapdagu.domain.food.service.FoodService;
@@ -18,16 +20,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 @Tag(name = "Food", description = "Food API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/food")
+@RequestMapping("/api/foods")
 public class FoodController {
 
     private final FoodService foodService;
@@ -62,6 +63,19 @@ public class FoodController {
             throw new BusinessException(ErrorCode.WRONG_SEARCH);
         }
         FoodScovilleSearchResponseDto response = foodService.searchFoodScoville(search);
+        return ResponseDto.ok(response);
+    }
+
+    @Operation(summary = "음식 상세 정보 조회", description = "음식 상세 정보를 id로 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "음식 상세 정보 조회 성공")
+                    , @ApiResponse(responseCode = "401", description = "인증에 실패했습니다.")
+                    , @ApiResponse(responseCode = "404", description = "1. 해당 회원을 찾을 수 없습니다. \t\n 2. 해당 평가를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            })
+    @GetMapping("/{foodId}")
+    public ResponseEntity<FoodGetResponseDto> getOneFood(@AuthenticationPrincipal UserDetails loginUser, @PathVariable Long foodId) {
+        FoodGetResponseDto response = foodService.getOneFood(loginUser.getUsername(), foodId);
         return ResponseDto.ok(response);
     }
 }
