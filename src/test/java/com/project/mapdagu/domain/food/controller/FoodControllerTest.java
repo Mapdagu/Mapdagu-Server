@@ -56,8 +56,8 @@ class FoodControllerTest {
         //given
         PageRequest pageable = PageRequest.of(0, 2);
         List<FoodSearchResponseDto> dtos = new ArrayList<>();
-        dtos.add(new FoodSearchResponseDto("신라면", 1, 3400));
-        dtos.add(new FoodSearchResponseDto("진라면", 2, 1270));
+        dtos.add(new FoodSearchResponseDto("신라면", "1", 3400));
+        dtos.add(new FoodSearchResponseDto("진라면", "2", 1270));
         Slice<FoodSearchResponseDto> response = new SliceImpl<>(dtos, pageable, false);
 
         //when
@@ -75,7 +75,7 @@ class FoodControllerTest {
     @Test
     void 음식_스코빌_지수_검색() throws Exception {
         //given
-        FoodScovilleSearchResponseDto responseDto = new FoodScovilleSearchResponseDto("신라면", 1, 3400);
+        FoodScovilleSearchResponseDto responseDto = new FoodScovilleSearchResponseDto("신라면", "1", 3400);
 
         //when
         given(foodService.searchFoodScoville(anyString())).willReturn(responseDto);
@@ -93,7 +93,7 @@ class FoodControllerTest {
     void 음식_상세_정보_조회() throws Exception {
         //given
         Long foodId = 1L;
-        FoodGetResponseDto responseDto = new FoodGetResponseDto(foodId, "신라면", 1, true, 5);
+        FoodGetResponseDto responseDto = new FoodGetResponseDto(foodId, "신라면", "1", true, 5);
 
         //when
         when(foodService.getOneFood(anyString(), anyLong())).thenReturn(responseDto);

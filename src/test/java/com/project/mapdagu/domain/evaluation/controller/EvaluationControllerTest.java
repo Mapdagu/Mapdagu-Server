@@ -124,7 +124,7 @@ class EvaluationControllerTest {
     void 맵기_평가_하나_조회() throws Exception {
         //given
         Long evaluationId = 1L;
-        EvaluationGetResponseDto responseDto = new EvaluationGetResponseDto("신라면", 1, 2);
+        EvaluationGetResponseDto responseDto = new EvaluationGetResponseDto("신라면", "1", 2);
 
         //when
         when(evaluationService.getOneEvaluation(anyString(), anyLong())).thenReturn(responseDto);
@@ -142,8 +142,8 @@ class EvaluationControllerTest {
         //given
         PageRequest pageable = PageRequest.of(0, 2);
         List<EvaluationsGetResponseDto> dtos = new ArrayList<>();
-        dtos.add(new EvaluationsGetResponseDto(1L, "신라면", 3400, 1, 3));
-        dtos.add(new EvaluationsGetResponseDto(2L, "진라면", 1270, 2, 2));
+        dtos.add(new EvaluationsGetResponseDto(1L, "신라면", 3400, "1", 3));
+        dtos.add(new EvaluationsGetResponseDto(2L, "진라면", 1270, "2", 2));
         Slice<EvaluationsGetResponseDto> response = new SliceImpl<>(dtos, pageable, false);
 
         //when
@@ -162,8 +162,8 @@ class EvaluationControllerTest {
         //given
         PageRequest pageable = PageRequest.of(0, 2);
         List<EvaluationSearchResponseDto> dtos = new ArrayList<>();
-        dtos.add(new EvaluationSearchResponseDto("신라면", 1, 3));
-        dtos.add(new EvaluationSearchResponseDto("진라면", 2, 2));
+        dtos.add(new EvaluationSearchResponseDto("신라면", "1", 3));
+        dtos.add(new EvaluationSearchResponseDto("진라면", "2", 2));
         Slice<EvaluationSearchResponseDto> response = new SliceImpl<>(dtos, pageable, false);
 
         //when
