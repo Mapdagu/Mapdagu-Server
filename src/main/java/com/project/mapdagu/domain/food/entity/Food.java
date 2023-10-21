@@ -20,7 +20,7 @@ public class Food {
 
     private String name;
 
-    private Integer imageNum;
+    private String image;
     private Integer level;
 
     private Integer scoville;
