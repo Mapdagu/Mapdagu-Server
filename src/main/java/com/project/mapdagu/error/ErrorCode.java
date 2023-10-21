@@ -20,6 +20,8 @@ public enum ErrorCode {
     FRIEND_REQUEST_NOT_FOUND(NOT_FOUND, "해당 친구 요청을 찾을 수 없습니다."),
     FRIEND_NOT_FOUND(NOT_FOUND, "해당 회원과 친구가 아닙니다."),
 
+
+    INVALID_FILE_UPLOAD(BAD_REQUEST, "파일 업로드에 실패하였습니다."),
     WRONG_SEARCH(BAD_REQUEST, "검색어를 입력해야 합니다."),
     ALREADY_EXIST_EVALUATION(BAD_REQUEST, "이미 존재하는 평가입니다."),
     ALREADY_LOGOUT_MEMBER(BAD_REQUEST, "이미 로그아웃한 회원입니다"),
