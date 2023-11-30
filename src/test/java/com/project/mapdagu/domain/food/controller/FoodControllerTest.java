@@ -63,7 +63,7 @@ class FoodControllerTest {
         //when
         given(foodService.searchFood(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/foods")
+                get("/foods")
                         .param("search", "라면")
         );
 
@@ -80,7 +80,7 @@ class FoodControllerTest {
         //when
         given(foodService.searchFoodScoville(anyString())).willReturn(responseDto);
         ResultActions result = mockMvc.perform(
-                get("/api/foods/scoville")
+                get("/foods/scoville")
                         .param("search", "신라면")
         );
 
@@ -98,7 +98,7 @@ class FoodControllerTest {
         //when
         when(foodService.getOneFood(anyString(), anyLong())).thenReturn(responseDto);
         ResultActions result = mockMvc.perform(
-                get("/api/foods/{foodId}", foodId)
+                get("/foods/{foodId}", foodId)
         );
 
         //then

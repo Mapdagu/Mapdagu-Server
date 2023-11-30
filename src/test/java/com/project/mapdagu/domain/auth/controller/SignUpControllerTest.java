@@ -53,7 +53,7 @@ class SignUpControllerTest {
                 "intro");
         //when
         ResultActions result = mockMvc.perform(
-                post("/api/sign-up")
+                post("/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -73,7 +73,7 @@ class SignUpControllerTest {
         );
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/sign-up/social")
+                patch("/sign-up/social")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );

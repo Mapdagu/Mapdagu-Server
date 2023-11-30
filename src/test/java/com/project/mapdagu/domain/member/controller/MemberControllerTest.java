@@ -67,7 +67,7 @@ class MemberControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/members/me/info")
+                patch("/members/me/info")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -85,7 +85,7 @@ class MemberControllerTest {
         //when
         given(memberService.readMemberInfo(anyString())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/members/me/info")
+                get("/members/me/info")
         );
 
         //then
@@ -101,7 +101,7 @@ class MemberControllerTest {
         //when
         given(memberService.readMainInfo(anyString())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/members/me/main")
+                get("/members/me/main")
         );
 
         //then
@@ -118,7 +118,7 @@ class MemberControllerTest {
         //when
         given(memberService.checkUserName(requestDto)).willReturn(response);
         ResultActions result = mockMvc.perform(
-                post("/api/members/userName/isDuplicated")
+                post("/members/userName/isDuplicated")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );

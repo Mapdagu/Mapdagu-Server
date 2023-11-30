@@ -37,7 +37,7 @@ import static com.project.mapdagu.error.ErrorCode.ALREADY_LOGOUT_MEMBER;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final Set<String> NO_CHECK_URLS = new HashSet<>(Arrays.asList("/login")); // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final Set<String> NO_CHECK_URLS = new HashSet<>(Arrays.asList("/auth/login")); // "/login"으로 들어오는 요청은 Filter 작동 X
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;

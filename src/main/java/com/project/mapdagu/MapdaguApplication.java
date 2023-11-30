@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@OpenAPIDefinition(servers = {@Server(url = "/", description = "https://mapdagu.site")})
+@OpenAPIDefinition(servers = {@Server(url = "/", description = "https://dev-api.mapdagu.site")})
 @EnableJpaAuditing
 @EnableCaching
 @SpringBootApplication

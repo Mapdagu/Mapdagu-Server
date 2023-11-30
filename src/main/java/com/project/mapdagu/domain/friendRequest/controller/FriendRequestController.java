@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Friend Request", description = "Friend Request API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/friends/request")
+@RequestMapping("/friends/request")
 public class FriendRequestController {
 
     private final FriendRequestService friendRequestService;

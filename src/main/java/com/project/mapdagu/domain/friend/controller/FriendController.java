@@ -27,7 +27,7 @@ import org.thymeleaf.util.StringUtils;
 @Tag(name = "Friend", description = "Friend API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/friends")
+@RequestMapping("/friends")
 public class FriendController {
 
     private final FriendService friendService;

@@ -59,7 +59,7 @@ class EvaluationControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                post("/api/evaluations")
+                post("/evaluations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -77,7 +77,7 @@ class EvaluationControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/evaluations/{evaluationId}", evaluationId)
+                patch("/evaluations/{evaluationId}", evaluationId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -94,7 +94,7 @@ class EvaluationControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                delete("/api/evaluations/{evaluationId}", evaluationId)
+                delete("/evaluations/{evaluationId}", evaluationId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -110,7 +110,7 @@ class EvaluationControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/evaluations/info")
+                patch("/evaluations/info")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -129,7 +129,7 @@ class EvaluationControllerTest {
         //when
         when(evaluationService.getOneEvaluation(anyString(), anyLong())).thenReturn(responseDto);
         ResultActions result = mockMvc.perform(
-                get("/api/evaluations/{evaluationId}", evaluationId)
+                get("/evaluations/{evaluationId}", evaluationId)
         );
 
         //then
@@ -149,7 +149,7 @@ class EvaluationControllerTest {
         //when
         given(evaluationService.getEvaluations(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/evaluations/me")
+                get("/evaluations/me")
         );
 
         //then
@@ -169,7 +169,7 @@ class EvaluationControllerTest {
         //when
         given(evaluationService.searchEvaluation(anyString(), anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/evaluations")
+                get("/evaluations")
                         .param("search", "라면")
         );
 

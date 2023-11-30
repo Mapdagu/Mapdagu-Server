@@ -30,7 +30,7 @@ import org.thymeleaf.util.StringUtils;
 @Tag(name = "Evaluation", description = "Evaluation API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/evaluations")
+@RequestMapping("/evaluations")
 public class EvaluationController {
 
     private final EvaluationService evaluationService;

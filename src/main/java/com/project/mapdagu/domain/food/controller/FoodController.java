@@ -28,7 +28,7 @@ import org.thymeleaf.util.StringUtils;
 @Tag(name = "Food", description = "Food API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/foods")
+@RequestMapping("/foods")
 public class FoodController {
 
     private final FoodService foodService;

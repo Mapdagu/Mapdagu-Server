@@ -45,7 +45,7 @@ class AuthControllerTest {
         //given
         //when
         ResultActions result = mockMvc.perform(
-                post("/api/auth/logout")
+                post("/auth/logout")
         );
         //then
         result.andExpect(status().isNoContent());

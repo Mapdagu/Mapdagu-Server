@@ -54,7 +54,7 @@ class FriendRequestControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                post("/api/friends/request/{friendId}", friendId)
+                post("/friends/request/{friendId}", friendId)
         );
 
         //then
@@ -69,7 +69,7 @@ class FriendRequestControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                delete("/api/friends/request/{friendId}", friendId)
+                delete("/friends/request/{friendId}", friendId)
         );
 
         //then
@@ -89,7 +89,7 @@ class FriendRequestControllerTest {
         //when
         given(friendRequestService.getAllFriendRequest(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/friends/request")
+                get("/friends/request")
         );
 
         //then

@@ -52,7 +52,7 @@ class TestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/test/info")
+                patch("/test/info")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -73,7 +73,7 @@ class TestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                post("/api/test")
+                post("/test")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );
@@ -93,7 +93,7 @@ class TestControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(
-                patch("/api/test")
+                patch("/test")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto))
         );

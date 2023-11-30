@@ -60,7 +60,7 @@ class FriendControllerTest {
         //when
         given(friendService.searchMember(anyString(), anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/friends")
+                get("/friends")
                         .param("search", "test")
         );
 
@@ -76,7 +76,7 @@ class FriendControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                post("/api/friends/{friendId}", friendId)
+                post("/friends/{friendId}", friendId)
         );
 
         //then
@@ -91,7 +91,7 @@ class FriendControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(
-                delete("/api/friends/{friendId}", friendId)
+                delete("/friends/{friendId}", friendId)
         );
 
         //then
@@ -111,7 +111,7 @@ class FriendControllerTest {
         //when
         given(friendService.getFriends(anyString(), any())).willReturn(response);
         ResultActions result = mockMvc.perform(
-                get("/api/friends/me")
+                get("/friends/me")
         );
 
         //then
