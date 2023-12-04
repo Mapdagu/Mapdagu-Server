@@ -2,7 +2,11 @@ package com.project.mapdagu.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
+import com.project.mapdagu.error.ErrorCode;
+import com.project.mapdagu.error.exception.custom.TokenException;
+import com.project.mapdagu.jwt.util.PasswordUtil;
 import com.project.mapdagu.util.RedisUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,10 +16,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+
+import static com.project.mapdagu.error.ErrorCode.ALREADY_LOGOUT_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +58,7 @@ public class JwtService {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisUtil redisUtil;
+    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     /**
      * AccessToken 생성 메소드
@@ -160,10 +173,83 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+
+            if(redisUtil.hasKeyBlackList(token)) {
+                throw new TokenException(ALREADY_LOGOUT_MEMBER);
+            }
             return true;
         } catch (Exception e) {
             log.info("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * AccessToken, RefreshToken 재발급 + 인증 + 응답 헤더에 보내기
+     */
+    private void reIssueRefreshAndAccessToken(HttpServletResponse response, String refreshToken, String email) {
+        String newAccessToken = createAccessToken(email);
+        String newRefreshToken = createRefreshToken(email);
+        getAuthentication(newAccessToken);
+        redisUtil.delete(email);
+        updateRefreshToken(email, newRefreshToken);
+        sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+        log.info("AccessToken, RefreshToken 재발급 완료");
+    }
+
+    /**
+     * AccessToken 재발급 + 인증 메소드 + 응답 헤더에 보내기
+     */
+    private void reIssueAccessToken(HttpServletResponse response, String refreshToken, String email) {
+        String newAccessToken = createAccessToken(email);
+        sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+        getAuthentication(newAccessToken);
+        log.info("AccessToken 인증 완료");
+    }
+
+    /**
+     * RefreshToken 검증 메소드
+     */
+    public boolean isRefreshTokenMatch(String email, String refreshToken) {
+        log.info("RefreshToken 검증");
+        if (redisUtil.get(email).equals(refreshToken)) {
+            return true;
+        }
+        throw new TokenException(ErrorCode.INVALID_TOKEN);
+    }
+
+    /**
+     * [인증 처리 메소드]
+     * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
+     */
+    public void getAuthentication(String accessToken) {
+        log.info("인증 처리 메소드 getAuthentication() 호출");
+        extractEmail(accessToken)
+                .ifPresent(email -> memberRepository.findByEmail(email)
+                        .ifPresent(this::saveAuthentication));
+    }
+
+    /**
+     * [인증 허가 메소드]
+     * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
+     */
+    public void saveAuthentication(Member member) {
+        log.info("인증 허가 메소드 saveAuthentication() 호출");
+        String password = member.getPassword();
+        if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
+            password = PasswordUtil.generateRandomPassword();
+        }
+
+        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
+                .username(member.getEmail())
+                .password(password)
+                .roles(member.getRole().name())
+                .build();
+
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
