@@ -38,12 +38,7 @@ import static com.project.mapdagu.error.ErrorCode.ALREADY_LOGOUT_MEMBER;
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final Set<String> NO_CHECK_URLS = new HashSet<>(Arrays.asList("/auth/login")); // "/login"으로 들어오는 요청은 Filter 작동 X
-
     private final JwtService jwtService;
-    private final MemberRepository memberRepository;
-    private final RedisUtil redisUtil;
-
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     /**
      * JWT 인증 필터
@@ -59,22 +54,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         String accessToken = jwtService.extractAccessToken(request).orElse(null);
         if (jwtService.isTokenValid(accessToken)) {
-            if(redisUtil.hasKeyBlackList(accessToken)) {
-                throw new TokenException(ALREADY_LOGOUT_MEMBER);
-            }
-            getAuthentication(accessToken);
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Access Token이 만료되어 Refresh Token으로 Access Token 재발급
-        String refreshToken = jwtService.extractRefreshToken(request).orElse(null);
-        if (StringUtils.hasText(accessToken) && jwtService.isTokenValid(refreshToken)) {
-            log.info("AccessToken 재발급");
-            String email = jwtService.extractEmail(refreshToken).orElseThrow(() -> new TokenException(ErrorCode.INVALID_TOKEN));
-            if (isRefreshTokenMatch(email, refreshToken)) {
-                reIssueRefreshAndAccessToken(response, refreshToken, email);
-            }
+            jwtService.getAuthentication(accessToken);
             filterChain.doFilter(request, response);
             return;
         }
@@ -83,72 +63,4 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * AccessToken, RefreshToken 재발급 + 인증 + 응답 헤더에 보내기
-     */
-    private void reIssueRefreshAndAccessToken(HttpServletResponse response, String refreshToken, String email) {
-        String newAccessToken = jwtService.createAccessToken(email);
-        String newRefreshToken = jwtService.createRefreshToken(email);
-        getAuthentication(newAccessToken);
-        redisUtil.delete(email);
-        jwtService.updateRefreshToken(email, newRefreshToken);
-        jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
-        log.info("AccessToken, RefreshToken 재발급 완료");
-    }
-
-    /**
-     * AccessToken 재발급 + 인증 메소드 + 응답 헤더에 보내기
-     */
-    private void reIssueAccessToken(HttpServletResponse response, String refreshToken, String email) {
-        String newAccessToken = jwtService.createAccessToken(email);
-        jwtService.sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
-        getAuthentication(newAccessToken);
-        log.info("AccessToken 인증 완료");
-    }
-
-    /**
-     * RefreshToken 검증 메소드
-     */
-    public boolean isRefreshTokenMatch(String email, String refreshToken) {
-        log.info("RefreshToken 검증");
-        if (redisUtil.get(email).equals(refreshToken)) {
-            return true;
-        }
-        throw new TokenException(ErrorCode.INVALID_TOKEN);
-    }
-
-    /**
-     * [인증 처리 메소드]
-     * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
-     */
-    public void getAuthentication(String accessToken) {
-        log.info("인증 처리 메소드 getAuthentication() 호출");
-        jwtService.extractEmail(accessToken)
-                .ifPresent(email -> memberRepository.findByEmail(email)
-                        .ifPresent(this::saveAuthentication));
-    }
-
-    /**
-     * [인증 허가 메소드]
-     * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
-     */
-    public void saveAuthentication(Member member) {
-        log.info("인증 허가 메소드 saveAuthentication() 호출");
-        String password = member.getPassword();
-        if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
-            password = PasswordUtil.generateRandomPassword();
-        }
-
-        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(member.getEmail())
-                .password(password)
-                .roles(member.getRole().name())
-                .build();
-
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 }
