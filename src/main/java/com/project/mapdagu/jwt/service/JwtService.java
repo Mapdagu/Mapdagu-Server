@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.project.mapdagu.domain.member.entity.Member;
 import com.project.mapdagu.domain.member.repository.MemberRepository;
-import com.project.mapdagu.error.ErrorCode;
 import com.project.mapdagu.error.exception.custom.TokenException;
 import com.project.mapdagu.jwt.util.PasswordUtil;
 import com.project.mapdagu.util.RedisUtil;
@@ -28,6 +27,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.project.mapdagu.error.ErrorCode.ALREADY_LOGOUT_MEMBER;
+import static com.project.mapdagu.error.ErrorCode.INVALID_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -197,6 +197,19 @@ public class JwtService {
         log.info("AccessToken, RefreshToken 재발급 완료");
     }
 
+    public void reIssueToken(HttpServletResponse response, String refreshToken) {
+        String email = extractEmail(refreshToken).orElseThrow(() -> new TokenException(INVALID_TOKEN));
+        isRefreshTokenMatch(email, refreshToken);
+        String newAccessToken = createAccessToken(email);
+        String newRefreshToken = createRefreshToken(email);
+        getAuthentication(newAccessToken);
+        redisUtil.delete(email);
+        updateRefreshToken(email, newRefreshToken);
+        sendAccessAndRefreshToken(response, newAccessToken, refreshToken);
+        log.info("AccessToken, RefreshToken 재발급 완료");
+    }
+
+
     /**
      * AccessToken 재발급 + 인증 메소드 + 응답 헤더에 보내기
      */
@@ -215,7 +228,7 @@ public class JwtService {
         if (redisUtil.get(email).equals(refreshToken)) {
             return true;
         }
-        throw new TokenException(ErrorCode.INVALID_TOKEN);
+        throw new TokenException(INVALID_TOKEN);
     }
 
     /**

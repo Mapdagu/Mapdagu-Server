@@ -74,6 +74,7 @@ public class SecurityConfig {
                                 .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
                                 .requestMatchers(mvcMatcherBuilder.pattern("/sign-up/email")).permitAll()
                                 .requestMatchers(mvcMatcherBuilder.pattern("/members/userName/isDuplicated")).permitAll()
+                                .requestMatchers(mvcMatcherBuilder.pattern("/auth/reIssue")).permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login.successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
