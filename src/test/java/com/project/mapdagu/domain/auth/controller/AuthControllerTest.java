@@ -1,7 +1,9 @@
 package com.project.mapdagu.domain.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mapdagu.domain.auth.dto.request.RefreshTokenRequest;
 import com.project.mapdagu.domain.auth.service.AuthService;
+import com.project.mapdagu.jwt.service.JwtService;
 import com.project.mapdagu.utils.TestUserArgumentResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,8 @@ class AuthControllerTest {
     private AuthController authController;
     @Mock
     private AuthService authService;
+    @Mock
+    private JwtService jwtService;
     private ObjectMapper objectMapper = new ObjectMapper();
     private MockMvc mockMvc;
 
@@ -50,5 +54,20 @@ class AuthControllerTest {
         //then
         result.andExpect(status().isNoContent());
         verify(authService, times(1)).logout(any(), anyString());
+    }
+
+    @Test
+    void 토큰_재발급() throws Exception {
+        //given
+        RefreshTokenRequest request = new RefreshTokenRequest("refreshToken");
+        //when
+        ResultActions result = mockMvc.perform(
+                post("/auth/reIssue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+        //then
+        result.andExpect(status().isNoContent());
+        verify(jwtService, times(1)).reIssueToken(any(), anyString());
     }
 }
