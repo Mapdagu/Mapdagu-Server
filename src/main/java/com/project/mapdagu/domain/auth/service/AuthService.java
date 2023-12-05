@@ -1,5 +1,6 @@
 package com.project.mapdagu.domain.auth.service;
 
+import com.project.mapdagu.domain.auth.dto.request.RefreshTokenRequest;
 import com.project.mapdagu.domain.auth.dto.request.SignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.request.SocialSignUpRequestDto;
 import com.project.mapdagu.domain.auth.dto.response.SocialSignUpResponseDto;
@@ -73,6 +74,6 @@ public class AuthService {
         String accessToken = jwtService.extractAccessToken(request).orElseThrow(() -> new TokenException(INVALID_TOKEN));
 
         redisUtil.delete(email);
-        redisUtil.setBlackList(email, accessToken, jwtService.getAccessTokenExpirationPeriod());
+        redisUtil.setBlackList(accessToken, "accessToken", jwtService.getAccessTokenExpirationPeriod());
     }
 }
