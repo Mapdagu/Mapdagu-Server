@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.*;
 
 
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+
+    NOT_ALLOWED_MEMBER(FORBIDDEN, "해당 요청에 대한 권한이 없습니다."),
+    NOT_AUTHENTICATED_REQUEST(SC_UNAUTHORIZED, "유효한 JWT 토큰이 없습니다."),
 
     TOKEN_NOT_EXIST(NOT_FOUND, "토큰이 존재하지 않습니다."),
     INVALID_TOKEN(UNAUTHORIZED, "잘못된 토큰입니다."),
